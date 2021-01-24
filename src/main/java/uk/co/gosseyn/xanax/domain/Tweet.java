@@ -1,4 +1,4 @@
-package uk.co.gosseyn.xanax;
+package uk.co.gosseyn.xanax.domain;
 
 import lombok.Builder;
 import lombok.Getter;

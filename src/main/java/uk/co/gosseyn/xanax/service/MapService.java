@@ -1,21 +1,31 @@
-package uk.co.gosseyn.xanax;
+package uk.co.gosseyn.xanax.service;
 
 import org.springframework.stereotype.Service;
+import uk.co.gosseyn.xanax.domain.Man;
+import uk.co.gosseyn.xanax.domain.Map;
+import uk.co.gosseyn.xanax.repository.MapRepository;
 
+import javax.inject.Inject;
 import java.util.Collection;
 import java.util.Collections;
 
-import static uk.co.gosseyn.xanax.MapBlockType.GRASS;
-import static uk.co.gosseyn.xanax.MapBlockType.ROCK;
+import static uk.co.gosseyn.xanax.domain.Map.GRASS;
+import static uk.co.gosseyn.xanax.domain.Map.ROCK;
 
 @Service
 public class MapService {
+
+    private MapRepository mapRepository;
+    @Inject
+    public MapService(MapRepository mapRepository) {
+        this.mapRepository = mapRepository;
+    }
     public Map newMap(int width, int height, int depth, double features) {
         Map map = new Map();
         map.setMap(new int[width][height][depth]);
         map.setItemsMap(new Collection[width][height][depth]);
-        uk.co.gosseyn.xanax.OpenSimplexNoise noise =
-                new uk.co.gosseyn.xanax.OpenSimplexNoise();
+        OpenSimplexNoise noise =
+                new OpenSimplexNoise();
         double max = Double.NEGATIVE_INFINITY;
         double min = Double.POSITIVE_INFINITY;
         for (int y = 0; y < height; y++)
@@ -44,8 +54,8 @@ public class MapService {
         System.out.println("min: "+min+" max: "+max);
         return map;
     }
-    public static void main(String[] args) {
-        MapService service = new MapService();
-        service.newMap(1000, 1000, 100, 1);
+
+    public Map getMap() {
+        return mapRepository.getMap();
     }
 }

@@ -1,4 +1,4 @@
-package uk.co.gosseyn.xanax;
+package uk.co.gosseyn.xanax.domain;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -14,6 +14,10 @@ public class Map implements TileBasedMap {
     public static final int WIDTH = 100;
     public static final int HEIGHT = 100;
     public static final int DEPTH = 8;
+
+    public static int ROCK = 1;
+    public static int GRASS = 2;
+    public static int WATER = 3;
 
     // For simple stuff like rock/tree trunk/grass
     private int[][][] map;
@@ -38,11 +42,11 @@ public class Map implements TileBasedMap {
 
     @Override
     public boolean blocked(final Mover mover, final int x, final int y) {
-        int unit = ((UnitMover) mover).getType();;
-        if(unit != 0) {
-            return true;
-        } else {
+        int unit = ((UnitMover) mover).getType();
+        if(map[x][y][4] == 0) {
             return false;
+        } else {
+        return true;
         }
     }
 

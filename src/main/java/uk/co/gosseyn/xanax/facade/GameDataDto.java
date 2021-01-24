@@ -1,4 +1,4 @@
-package uk.co.gosseyn.xanax;
+package uk.co.gosseyn.xanax.facade;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -8,6 +8,6 @@ import java.util.List;
 
 @Getter
 @Setter
-public class GameDataView {
+public class GameDataDto {
     private List<Integer> map[][];
 }

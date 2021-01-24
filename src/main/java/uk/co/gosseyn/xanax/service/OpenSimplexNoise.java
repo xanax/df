@@ -1,4 +1,4 @@
-package uk.co.gosseyn.xanax;/*
+package uk.co.gosseyn.xanax.service;/*
  * 2014 OpenSimplex Noise in Java.
  * by Kurt Spencer
  * 

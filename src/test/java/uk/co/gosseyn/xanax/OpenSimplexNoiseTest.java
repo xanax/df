@@ -1,5 +1,7 @@
 package uk.co.gosseyn.xanax;
 
+import uk.co.gosseyn.xanax.service.OpenSimplexNoise;
+
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 import java.io.*;
@@ -12,8 +14,8 @@ public class OpenSimplexNoiseTest
 
 	public static void main(String[] args)
 		throws IOException {
-		uk.co.gosseyn.xanax.OpenSimplexNoise noise =
-				new uk.co.gosseyn.xanax.OpenSimplexNoise();
+		OpenSimplexNoise noise =
+				new OpenSimplexNoise();
 		BufferedImage image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
 		double max = Double.NEGATIVE_INFINITY;
 		double min = Double.POSITIVE_INFINITY;
