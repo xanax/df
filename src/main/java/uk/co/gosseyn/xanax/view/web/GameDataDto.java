@@ -1,4 +1,4 @@
-package uk.co.gosseyn.xanax.facade;
+package uk.co.gosseyn.xanax.view.web;
 
 import lombok.Getter;
 import lombok.Setter;

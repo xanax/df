@@ -5,8 +5,9 @@ var cursor = document.getElementById("cursor");
 cursor.style.display = 'none';
 var cursorx = 0;
 var cursory = 0;
-var selectionx;
+var selectionx = -1;
 var selectiony;
+var selectionz;
 var mode = 'navigate';
 
 var x = 0;
@@ -38,11 +39,11 @@ function init() {
 
     refresh();
     var intervalId = setInterval(function() {
-    //refresh();
+    refresh();
       gameInfo.innerHTML = 'x-offset '+x+' y-offsey '+ y +' z '+z+'<br>'+
-      'x-selection '+selectionx+' y-selection '+selectiony+'<br>'+
+      'x-selection '+selectionx+' y-selection '+selectiony+' z-selection '+selectionz+'<br>'+
       code+' time: '+new Date();
-    }, 1000);
+    }, 300);
 
     // You can clear a periodic function by uncommenting:
     // clearInterval(intervalId);
@@ -125,8 +126,28 @@ function refresh() {
         var dy = 0;
 		switch(code) {
             case keys.select:
-                selectionx = cursorx + x;
-                selectiony = cursory + y;
+                if(selectionx != -1) {
+                    minAjax({
+                    url:"/findPath",
+                    type:"GET",
+                    data:{
+                        startx: selectionx,
+                        starty: selectiony,
+                        startz: selectionz,
+                        endx: cursorx + x,
+                        endy: cursory + y,
+                        endz: z
+                    },
+                    success: function(data){
+                        selectionx = -1;
+                        alert(data);
+                    }
+                    });
+                } else {
+                    selectionx = cursorx + x;
+                    selectiony = cursory + y;
+                    selectionz = z;
+                }
                 break;
 		    case keys.mode:
 		        if(mode == 'cursor') {

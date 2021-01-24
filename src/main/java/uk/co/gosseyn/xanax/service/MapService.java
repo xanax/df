@@ -3,11 +3,14 @@ package uk.co.gosseyn.xanax.service;
 import org.springframework.stereotype.Service;
 import uk.co.gosseyn.xanax.domain.Man;
 import uk.co.gosseyn.xanax.domain.Map;
-import uk.co.gosseyn.xanax.repository.MapRepository;
+import uk.co.gosseyn.xanax.domain.Vector3d;
+import uk.co.gosseyn.xanax.repository.GameRepository;
 
 import javax.inject.Inject;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 import static uk.co.gosseyn.xanax.domain.Map.GRASS;
 import static uk.co.gosseyn.xanax.domain.Map.ROCK;
@@ -15,10 +18,10 @@ import static uk.co.gosseyn.xanax.domain.Map.ROCK;
 @Service
 public class MapService {
 
-    private MapRepository mapRepository;
+    private GameRepository gameRepository;
     @Inject
-    public MapService(MapRepository mapRepository) {
-        this.mapRepository = mapRepository;
+    public MapService(GameRepository gameRepository) {
+        this.gameRepository = gameRepository;
     }
     public Map newMap(int width, int height, int depth, double features) {
         Map map = new Map();
@@ -38,10 +41,14 @@ public class MapService {
                 int i;
                 for (i = 0; i < (int)value - 1; i++) {
                     map.getMap()[x][y][i] = ROCK; // TODO fill vertically with something
+                    map.getItemsMap()[x][y][i] = new HashSet<>();
                  }
+                map.getItemsMap()[x][y][i] = new HashSet<>();
                 map.getMap()[x][y][i] = GRASS;
-                if(x == 1 && y == 5) {
-                    map.getItemsMap()[x][y][i + 1] = Collections.singleton(new Man());
+                if(x == 0 && y == 44) {
+                    Man man = new Man();
+                    man.setLocation(new Vector3d(x, y, i));
+                    map.getItemsMap()[x][y][i].add(man);
                 }
                 if(value > max) {
                     max = value;
@@ -53,9 +60,5 @@ public class MapService {
         }
         System.out.println("min: "+min+" max: "+max);
         return map;
-    }
-
-    public Map getMap() {
-        return mapRepository.getMap();
     }
 }

@@ -11,9 +11,6 @@ import java.util.Collection;
 @Getter
 @Setter
 public class Map implements TileBasedMap {
-    public static final int WIDTH = 100;
-    public static final int HEIGHT = 100;
-    public static final int DEPTH = 8;
 
     public static int ROCK = 1;
     public static int GRASS = 2;
@@ -27,12 +24,15 @@ public class Map implements TileBasedMap {
 
     @Override
     public int getWidthInTiles() {
-        return WIDTH;
+        return map.length;
     }
 
     @Override
     public int getHeightInTiles() {
-        return HEIGHT;
+        return map[0].length;
+    }
+    public int getDepthInTiles() {
+        return map[0][0].length;
     }
 
     @Override
@@ -43,7 +43,7 @@ public class Map implements TileBasedMap {
     @Override
     public boolean blocked(final Mover mover, final int x, final int y) {
         int unit = ((UnitMover) mover).getType();
-        if(map[x][y][4] == 0) {
+        if(map[x][y][4] == GRASS) { // TODO Z
             return false;
         } else {
         return true;

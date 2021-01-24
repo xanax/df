@@ -1,7 +1,9 @@
-package uk.co.gosseyn.xanax.facade;
+package uk.co.gosseyn.xanax.view.web;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.co.gosseyn.xanax.domain.Map;
+import uk.co.gosseyn.xanax.service.GameService;
 import uk.co.gosseyn.xanax.service.MapService;
 
 import javax.inject.Inject;
@@ -9,28 +11,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Collections.singleton;
-import static uk.co.gosseyn.xanax.domain.Map.DEPTH;
 
 @Component
 public class GameFacade {
-    private int screenWidthInTiles = 24;
-    private int screenHeightInTiles = 20;
-    private MapService mapService;
-    @Inject
-    public GameFacade(MapService mapService) {
-        this.mapService = mapService;
-    }
-    public GameDataDto getGameData(int xTileOffset, int yTileOffset, int zTileOffset) {
+    @Autowired
+    private GameService gameService;
+
+    public GameDataDto getGameData(int xTileOffset, int yTileOffset, int zTileOffset, int screenWidthInTiles, int screenHeightInTiles) {
         GameDataDto gameDataDto = new GameDataDto();
         gameDataDto.setMap(new List[screenWidthInTiles][screenHeightInTiles]);
 
-        Map map = mapService.getMap();
+        Map map = gameService.getGame().getMap();
         for (int y = yTileOffset; y < yTileOffset + screenHeightInTiles; y++) {
             for (int x = xTileOffset; x < xTileOffset + screenWidthInTiles; x++) {
                 int view;
 
                 int current = map.getMap()[x][y][zTileOffset];
-                if (current != 0 && (zTileOffset == DEPTH - 1 || map.getMap()[x][y][zTileOffset + 1] == 0)) {
+                if (current != 0 && (zTileOffset == map.getDepthInTiles() - 1 || map.getMap()[x][y][zTileOffset + 1] == 0)) {
                     // current block full and nothing above
                     view = current;
                 } else if (current == 0 && map.getMap()[x][y][zTileOffset - 1] != 0) {
@@ -46,15 +43,15 @@ public class GameFacade {
                 gameDataDto.getMap()[x - xTileOffset][y - yTileOffset] = new ArrayList<>();
 
                 gameDataDto.getMap()[x - xTileOffset][y - yTileOffset].add(view);
-                if (map.getItemsMap()[x][y][zTileOffset] != null) {
+                if (map.getItemsMap()[x][y][zTileOffset] != null && !map.getItemsMap()[x][y][zTileOffset].isEmpty()) {
                     // TODO
                     gameDataDto.getMap()[x - xTileOffset][y - yTileOffset]
                             .addAll(singleton(map.getItemsMap()[x][y][zTileOffset].iterator().next().getCode()));
                 }
-                if (zTileOffset < DEPTH - 1 && map.getItemsMap()[x][y][zTileOffset + 1] != null) {
+                if (zTileOffset > 1 && map.getItemsMap()[x][y][zTileOffset - 1] != null && !map.getItemsMap()[x][y][zTileOffset - 1].isEmpty()) {
                     // TODO
                     gameDataDto.getMap()[x - xTileOffset][y - yTileOffset]
-                            .addAll(singleton(map.getItemsMap()[x][y][zTileOffset + 1].iterator().next().getCode()));
+                            .addAll(singleton(map.getItemsMap()[x][y][zTileOffset - 1].iterator().next().getCode()));
                 }
 
             }
