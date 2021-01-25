@@ -16,6 +16,7 @@ import uk.co.gosseyn.xanax.service.GameService;
 import uk.co.gosseyn.xanax.service.MapService;
 
 import javax.inject.Inject;
+import java.lang.instrument.Instrumentation;
 
 @RestController
 public class MainController {
@@ -56,12 +57,12 @@ public class MainController {
         if(item != null && item.getPathStep() < item.getPath().getLength()) {
             item.setPathStep(item.getPathStep() + 1); // first one contains current
             Path.Step step = item.getPath().getStep(item.getPathStep());
-
-                map.getItemsMap()[item.getLocation().getX()]
-                        [item.getLocation().getY()]
-                        [item.getLocation().getZ()].remove(item);
-                map.getItemsMap()[step.getX()][step.getY()][item.getLocation().getZ()].add(item);
-                item.setLocation(new Vector3d(step.getX(), step.getY(), item.getLocation().getZ()));
+                map.removeItem(new Vector3d(item.getLocation().getX(),
+                        item.getLocation().getY(),
+                        item.getLocation().getZ()),item);
+                Vector3d newLocation = new Vector3d(step.getX(), step.getY(), item.getLocation().getZ());
+                map.addItem(newLocation, item);
+                item.setLocation(newLocation);
         }
         return gameFacade.getGameData(left, top, z, width, height);
     }
@@ -80,10 +81,11 @@ public class MainController {
                          @RequestParam int endy,
                          @RequestParam int endz) {
         finder = new AStarPathFinder(gameService.getGame().getMap(), 500, false);
-        item = gameService.getGame().getMap().getItemsMap()[startx][starty][startz].iterator().next();
+        item = gameService.getGame().getMap().getItem(new Vector3d(startx, starty, startz)).iterator().next();
         item.setPathStep(0);
         item.setPath(
         finder.findPath(new UnitMover(0),
                 startx, starty, endx, endy));
+
     }
 }

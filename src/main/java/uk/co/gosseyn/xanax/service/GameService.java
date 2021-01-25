@@ -13,4 +13,8 @@ public class GameService {
         return gameRepository.getGame();
     }
 
+    public void update() {
+
+    }
+
 }

@@ -24,9 +24,7 @@ public class MapService {
         this.gameRepository = gameRepository;
     }
     public Map newMap(int width, int height, int depth, double features) {
-        Map map = new Map();
-        map.setMap(new int[width][height][depth]);
-        map.setItemsMap(new Collection[width][height][depth]);
+        Map map = new Map(new Vector3d(width, height, depth));
         OpenSimplexNoise noise =
                 new OpenSimplexNoise();
         double max = Double.NEGATIVE_INFINITY;
@@ -40,15 +38,15 @@ public class MapService {
                 value = (int)(value * (depth + 1));
                 int i;
                 for (i = 0; i < (int)value - 1; i++) {
-                    map.getMap()[x][y][i] = ROCK; // TODO fill vertically with something
-                    map.getItemsMap()[x][y][i] = new HashSet<>();
+                    map.setBlock(new Vector3d(x, y, i), ROCK); // TODO fill vertically with something
                  }
-                map.getItemsMap()[x][y][i] = new HashSet<>();
-                map.getMap()[x][y][i] = GRASS;
+                map.setBlock(new Vector3d(x, y, i), GRASS);
                 if(x == 0 && y == 44) {
                     Man man = new Man();
-                    man.setLocation(new Vector3d(x, y, i));
-                    map.getItemsMap()[x][y][i].add(man);
+                    Vector3d position = new Vector3d(x, y, i);
+                    man.setLocation(position);
+                    map.addItem(position, man);
+
                 }
                 if(value > max) {
                     max = value;

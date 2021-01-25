@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public  class Vector3d {
-    private  int x;
-    private  int y;
-    private  int z;
+    private int x;
+    private int y;
+    private int z;
 }
