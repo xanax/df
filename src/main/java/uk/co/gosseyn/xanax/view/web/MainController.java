@@ -16,7 +16,7 @@ import uk.co.gosseyn.xanax.service.GameService;
 import uk.co.gosseyn.xanax.service.MapService;
 
 import javax.inject.Inject;
-import java.lang.instrument.Instrumentation;
+import java.util.UUID;
 
 @RestController
 public class MainController {
@@ -35,13 +35,15 @@ public class MainController {
 
     private Item item;
 
+    private UUID gameId;
+
     @RequestMapping("/gameData")
-    public GameDataDto gameData(@RequestParam int left,
-                                @RequestParam int top,
-                                @RequestParam int z,
-                                @RequestParam int width,
-                                @RequestParam int height) {
-        Game game = gameService.getGame();
+    public FrameData gameData(@RequestParam int left,
+                              @RequestParam int top,
+                              @RequestParam int z,
+                              @RequestParam int width,
+                              @RequestParam int height) {
+        Game game = gameService.getGame(gameId);
         Map map = game.getMap();
 
         if (left < 0) {
@@ -54,7 +56,7 @@ public class MainController {
         } else if (top > map.getHeightInTiles() - height) {
             top = map.getHeightInTiles() - height;
         }
-        if(item != null && item.getPathStep() < item.getPath().getLength()) {
+        if(item != null && item.getPath() != null && item.getPathStep() < item.getPath().getLength()) {
             item.setPathStep(item.getPathStep() + 1); // first one contains current
             Path.Step step = item.getPath().getStep(item.getPathStep());
                 map.removeItem(new Vector3d(item.getLocation().getX(),
@@ -64,13 +66,13 @@ public class MainController {
                 map.addItem(newLocation, item);
                 item.setLocation(newLocation);
         }
-        return gameFacade.getGameData(left, top, z, width, height);
+        return gameFacade.getFrameData(game, left, top, z, width, height);
     }
 
     @RequestMapping("/newMap")
     public void newMap() {
         item = null;
-        gameService.getGame().setMap(mapService.newMap(100, 100, 8, 15));
+        gameId = gameService.newGame().getGameId();
     }
 
     @RequestMapping("/findPath")
@@ -80,8 +82,9 @@ public class MainController {
                          @RequestParam int endx,
                          @RequestParam int endy,
                          @RequestParam int endz) {
-        finder = new AStarPathFinder(gameService.getGame().getMap(), 500, false);
-        item = gameService.getGame().getMap().getItem(new Vector3d(startx, starty, startz)).iterator().next();
+        Map map = gameService.getGame(gameId).getMap();
+        finder = new AStarPathFinder(map, 500, false);
+        item = map.getItem(new Vector3d(startx, starty, startz)).iterator().next();
         item.setPathStep(0);
         item.setPath(
         finder.findPath(new UnitMover(0),

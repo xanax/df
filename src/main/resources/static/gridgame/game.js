@@ -43,7 +43,7 @@ function init() {
       gameInfo.innerHTML = 'x-offset '+x+' y-offsey '+ y +' z '+z+'<br>'+
       'x-selection '+selectionx+' y-selection '+selectiony+' z-selection '+selectionz+'<br>'+
       code+' time: '+new Date();
-    }, 300);
+    }, 1000);
 
     // You can clear a periodic function by uncommenting:
     // clearInterval(intervalId);
@@ -140,7 +140,7 @@ function refresh() {
                     },
                     success: function(data){
                         selectionx = -1;
-                        alert(data);
+                        //alert(data);
                     }
                     });
                 } else {

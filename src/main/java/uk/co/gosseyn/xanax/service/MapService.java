@@ -1,8 +1,10 @@
 package uk.co.gosseyn.xanax.service;
 
 import org.springframework.stereotype.Service;
+import uk.co.gosseyn.xanax.domain.Item;
 import uk.co.gosseyn.xanax.domain.Man;
 import uk.co.gosseyn.xanax.domain.Map;
+import uk.co.gosseyn.xanax.domain.Vector2d;
 import uk.co.gosseyn.xanax.domain.Vector3d;
 import uk.co.gosseyn.xanax.repository.GameRepository;
 
@@ -23,6 +25,7 @@ public class MapService {
     public MapService(GameRepository gameRepository) {
         this.gameRepository = gameRepository;
     }
+
     public Map newMap(int width, int height, int depth, double features) {
         Map map = new Map(new Vector3d(width, height, depth));
         OpenSimplexNoise noise =
@@ -41,13 +44,6 @@ public class MapService {
                     map.setBlock(new Vector3d(x, y, i), ROCK); // TODO fill vertically with something
                  }
                 map.setBlock(new Vector3d(x, y, i), GRASS);
-                if(x == 0 && y == 44) {
-                    Man man = new Man();
-                    Vector3d position = new Vector3d(x, y, i);
-                    man.setLocation(position);
-                    map.addItem(position, man);
-
-                }
                 if(value > max) {
                     max = value;
                 }
@@ -58,5 +54,15 @@ public class MapService {
         }
         System.out.println("min: "+min+" max: "+max);
         return map;
+    }
+
+    public void placeItem(Map map, Vector2d location, Item item) {
+        Vector3d l = new Vector3d(location.getX(), location.getY(), 0);
+        while(map.getBlock(l) != 0) {
+            l.setZ(l.getZ() + 1);
+        }
+        l.setZ(l.getZ() -1);
+        item.setLocation(l);
+        map.addItem(l, item);
     }
 }

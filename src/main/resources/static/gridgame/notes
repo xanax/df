@@ -1,1 +1,58 @@
 have ability to partial match path eg if enemy knows best way to get in ie door/window s . pathfinder.
+
+click on stuff on the landscape and select what to do with it eg chop wood, attack bear. agent will be intelligently
+selected based on eg profession / lazyness / moral.
+
+player can either select zones in which tasks can be actioned - eg fell trees here - or can select agent
+and say fell trees. he will start moving towards nearest trees and player can then select trees if playwer
+wishes.
+
+tasks might involve two or more agents or more once certain part of task complete. eg select cut down trees
+will cause agent to cut tree then when x% trees in forest are cut, and there exists a log stockpile, another will
+take to stockpile.
+
+so player creates tasks and agents do. Could model with layers of specificity eg
+
+Lumber
+    Felltrees
+        walk to zone
+
+    Build stockpile
+
+maybe have a zone monitor that says eg if wood zone, if 50% cut create task to stockpile.
+
+
+
+
+
+
+
+
+
+start screen
+init
+    generate map
+    initial set up
+
+
+
+
+class Action:
+    perform()
+
+class LiveAction
+    List<Action> = {
+        new SleepAction(6),
+        new ChopWoodAction(6)
+    }
+
+class CollectWoodAction
+    Zone currentForest;
+    List<Action> = {
+        new TraversePathAction(),
+        new ChopWoodAction()
+
+    }
+
+class TraversePathAction:
+    List<Move

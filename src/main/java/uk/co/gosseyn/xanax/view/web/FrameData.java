@@ -8,6 +8,6 @@ import java.util.List;
 
 @Getter
 @Setter
-public class GameDataDto {
+public class FrameData {
     private List<Integer> map[][];
 }

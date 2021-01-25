@@ -5,10 +5,15 @@ import lombok.Setter;
 import org.springframework.stereotype.Component;
 import uk.co.gosseyn.xanax.domain.Game;
 
-@Getter
-@Setter
-// TODO put in db
+import java.util.UUID;
+
 @Component
 public class GameRepository {
-    private Game game = new Game();
+    private Game game;
+    public Game getGame(UUID gameId) {
+        return game;
+    }
+    public void saveGame(Game game) {
+        this.game = game;
+    }
 }
