@@ -1,18 +1,13 @@
 package uk.co.gosseyn.xanax.domain;
 
-import lombok.Getter;
-import lombok.Setter;
 import org.newdawn.slick.util.pathfinding.Mover;
 import org.newdawn.slick.util.pathfinding.TileBasedMap;
 import org.newdawn.slick.util.pathfinding.example.UnitMover;
 
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Stream;
 
-public class Map implements TileBasedMap {
+public class BlockMap implements TileBasedMap {
 
     public static int ROCK = 1;
     public static int GRASS = 2;
@@ -24,9 +19,9 @@ public class Map implements TileBasedMap {
     private int[] map;
 
     // For complex stuff and for where multiple items exist at single point. Expect most of the elements to be null
-    private Set<Item>[] itemsMap;
+    private Set<Locatable>[] itemsMap;
 
-    public Map(Vector3d size) {
+    public BlockMap(Vector3d size) {
         this.size = size;
         map = new int[size.getX() * size.getY() * size.getZ()];
         itemsMap = new Set[size.getX() * size.getY() * size.getZ()];
@@ -42,13 +37,13 @@ public class Map implements TileBasedMap {
     public void setBlock(Vector3d location, int block) {
         map[(location.getZ() * size.getX() * size.getY()) + (location.getY() * size.getX()) + location.getX()] = block;
     }
-    public Set<Item> getItem(Vector3d location) {
+    public Set<Locatable> getItem(Vector3d location) {
         return itemsMap[(location.getZ() * size.getX() * size.getY()) + (location.getY() * size.getX()) + location.getX()];
     }
-    public void addItem(Vector3d location, Item item) {
+    public void addItem(Vector3d location, Locatable item) {
         itemsMap[(location.getZ() * size.getX() * size.getY()) + (location.getY() * size.getX()) + location.getX()].add(item);
     }
-    public void removeItem(Vector3d location, Item item) {
+    public void removeItem(Vector3d location, Locatable item) {
         itemsMap[(location.getZ() * size.getX() * size.getY()) + (location.getY() * size.getX()) + location.getX()].remove(item);
     }
 

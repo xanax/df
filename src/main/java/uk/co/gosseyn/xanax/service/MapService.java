@@ -1,21 +1,16 @@
 package uk.co.gosseyn.xanax.service;
 
 import org.springframework.stereotype.Service;
-import uk.co.gosseyn.xanax.domain.Item;
-import uk.co.gosseyn.xanax.domain.Man;
-import uk.co.gosseyn.xanax.domain.Map;
+import uk.co.gosseyn.xanax.domain.Locatable;
+import uk.co.gosseyn.xanax.domain.BlockMap;
 import uk.co.gosseyn.xanax.domain.Vector2d;
 import uk.co.gosseyn.xanax.domain.Vector3d;
 import uk.co.gosseyn.xanax.repository.GameRepository;
 
 import javax.inject.Inject;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 
-import static uk.co.gosseyn.xanax.domain.Map.GRASS;
-import static uk.co.gosseyn.xanax.domain.Map.ROCK;
+import static uk.co.gosseyn.xanax.domain.BlockMap.GRASS;
+import static uk.co.gosseyn.xanax.domain.BlockMap.ROCK;
 
 @Service
 public class MapService {
@@ -26,8 +21,8 @@ public class MapService {
         this.gameRepository = gameRepository;
     }
 
-    public Map newMap(int width, int height, int depth, double features) {
-        Map map = new Map(new Vector3d(width, height, depth));
+    public BlockMap newMap(int width, int height, int depth, double features) {
+        BlockMap map = new BlockMap(new Vector3d(width, height, depth));
         OpenSimplexNoise noise =
                 new OpenSimplexNoise();
         double max = Double.NEGATIVE_INFINITY;
@@ -56,7 +51,7 @@ public class MapService {
         return map;
     }
 
-    public void placeItem(Map map, Vector2d location, Item item) {
+    public void placeItem(BlockMap map, Vector2d location, Locatable item) {
         Vector3d l = new Vector3d(location.getX(), location.getY(), 0);
         while(map.getBlock(l) != 0) {
             l.setZ(l.getZ() + 1);

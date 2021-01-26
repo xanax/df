@@ -4,9 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.co.gosseyn.xanax.domain.Game;
 import uk.co.gosseyn.xanax.domain.Man;
-import uk.co.gosseyn.xanax.domain.Map;
+import uk.co.gosseyn.xanax.domain.BlockMap;
+import uk.co.gosseyn.xanax.domain.Player;
 import uk.co.gosseyn.xanax.domain.Vector2d;
-import uk.co.gosseyn.xanax.domain.Vector3d;
 import uk.co.gosseyn.xanax.repository.GameRepository;
 
 import java.util.UUID;
@@ -25,9 +25,9 @@ public class GameService {
     }
 
     public Game newGame() {
-        Game game = new Game();
-        Map map =  mapService.newMap(100, 100, 8, 15);
-        game.setMap(map);
+        BlockMap map =  mapService.newMap(100, 100, 8, 15);
+
+        Game game = Game.builder().map(map).build();
         Man man = new Man();
         mapService.placeItem(map, new Vector2d(0, 44), man);
         gameRepository.saveGame(game);

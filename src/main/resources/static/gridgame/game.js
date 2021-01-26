@@ -115,7 +115,7 @@ function refresh() {
     var keys = { up: 87, down: 83, left: 65, right: 68,
                  refresh: 190,
                  pageUp: 38, pageDown: 40, pageLeft: 37, pageRight: 39, zup: 79, zdown: 76,
-                 mode: 32, select: 13};
+                 mode: 32, select: 13, zone: 90};
     addEvent(document, "keydown", function(e) {
 
 		// get key press in cross browser way
@@ -127,6 +127,7 @@ function refresh() {
 		switch(code) {
             case keys.select:
                 if(selectionx != -1) {
+
                     minAjax({
                     url:"/findPath",
                     type:"GET",
@@ -149,6 +150,28 @@ function refresh() {
                     selectionz = z;
                 }
                 break;
+		    case keys.zone:
+                if(selectionx != -1) {
+
+                    minAjax({
+                    url:"/zone",
+                    type:"GET",
+                    data:{
+                        startx: selectionx,
+                        starty: selectiony,
+                        startz: selectionz,
+                        endx: cursorx + x,
+                        endy: cursory + y,
+                        endz: z
+                    },
+                    success: function(data){
+                        selectionx = -1;
+                        //alert(data);
+                    }
+                    });
+                }
+
+		        break;
 		    case keys.mode:
 		        if(mode == 'cursor') {
 		            mode = 'navigate';

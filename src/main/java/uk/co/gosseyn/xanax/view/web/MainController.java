@@ -1,5 +1,6 @@
 package uk.co.gosseyn.xanax.view.web;
 
+import lombok.var;
 import org.newdawn.slick.util.pathfinding.AStarPathFinder;
 import org.newdawn.slick.util.pathfinding.Path;
 import org.newdawn.slick.util.pathfinding.PathFinder;
@@ -9,11 +10,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import uk.co.gosseyn.xanax.domain.Game;
-import uk.co.gosseyn.xanax.domain.Item;
-import uk.co.gosseyn.xanax.domain.Map;
+import uk.co.gosseyn.xanax.domain.BlockMap;
+import uk.co.gosseyn.xanax.domain.Moveable;
 import uk.co.gosseyn.xanax.domain.Vector3d;
 import uk.co.gosseyn.xanax.service.GameService;
 import uk.co.gosseyn.xanax.service.MapService;
+import uk.co.gosseyn.xanax.service.PlayerService;
 
 import javax.inject.Inject;
 import java.util.UUID;
@@ -29,12 +31,16 @@ public class MainController {
     @Autowired
     private GameService gameService;
     @Autowired
+    private PlayerService playerService;
+    @Autowired
     private MapService mapService;
 
     private PathFinder finder;
 
-    private Item item;
+    private Moveable item;
 
+    //TODO this will be passed from client
+    private UUID playerId;
     private UUID gameId;
 
     @RequestMapping("/gameData")
@@ -44,7 +50,7 @@ public class MainController {
                               @RequestParam int width,
                               @RequestParam int height) {
         Game game = gameService.getGame(gameId);
-        Map map = game.getMap();
+        BlockMap map = game.getMap();
 
         if (left < 0) {
             left = 0;
@@ -73,6 +79,8 @@ public class MainController {
     public void newMap() {
         item = null;
         gameId = gameService.newGame().getGameId();
+        var player = playerService.newPlayer();
+        playerId = player.getPlayerId();
     }
 
     @RequestMapping("/findPath")
@@ -82,13 +90,24 @@ public class MainController {
                          @RequestParam int endx,
                          @RequestParam int endy,
                          @RequestParam int endz) {
-        Map map = gameService.getGame(gameId).getMap();
-        finder = new AStarPathFinder(map, 500, false);
-        item = map.getItem(new Vector3d(startx, starty, startz)).iterator().next();
+        BlockMap map = gameService.getGame(gameId).getMap();
+        finder = new AStarPathFinder(map, 500, true);
+        item = (Moveable) map.getItem(new Vector3d(startx, starty, startz)).iterator().next();
         item.setPathStep(0);
         item.setPath(
-        finder.findPath(new UnitMover(0),
-                startx, starty, endx, endy));
+                finder.findPath(new UnitMover(0),
+                        startx, starty, endx, endy));
+
+    }
+
+    @RequestMapping("/zone")
+    public void zone(@RequestParam int startx,
+                         @RequestParam int starty,
+                         @RequestParam int startz,
+                         @RequestParam int endx,
+                         @RequestParam int endy,
+                         @RequestParam int endz) {
+        BlockMap map = gameService.getGame(gameId).getMap();
 
     }
 }

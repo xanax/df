@@ -1,15 +1,11 @@
 package uk.co.gosseyn.xanax.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import org.newdawn.slick.util.pathfinding.Path;
+import lombok.Data;
 
-@Getter
-@Setter
-public abstract class Item {
-    abstract public int getCode();
-    private int pathStep;
+@Data
+public abstract class Item extends GameObject implements Locatable {
+    @Override
+    public abstract int getCode();
     private Vector3d location;
-    private Path path;
+    private Game game;
 }

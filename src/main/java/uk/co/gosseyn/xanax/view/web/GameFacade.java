@@ -3,7 +3,7 @@ package uk.co.gosseyn.xanax.view.web;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.co.gosseyn.xanax.domain.Game;
-import uk.co.gosseyn.xanax.domain.Map;
+import uk.co.gosseyn.xanax.domain.BlockMap;
 import uk.co.gosseyn.xanax.domain.Vector3d;
 import uk.co.gosseyn.xanax.service.GameService;
 
@@ -21,7 +21,7 @@ public class GameFacade {
         FrameData frameData = new FrameData();
         frameData.setMap(new List[screenWidthInTiles][screenHeightInTiles]);
 
-        Map map = game.getMap();
+        BlockMap map = game.getMap();
         for (int y = yTileOffset; y < yTileOffset + screenHeightInTiles; y++) {
             for (int x = xTileOffset; x < xTileOffset + screenWidthInTiles; x++) {
                 int view;
