@@ -7,6 +7,7 @@ import lombok.Singular;
 import lombok.experimental.FieldDefaults;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +20,7 @@ public class Game {
     UUID gameId = UUID.randomUUID();
     BlockMap map;
     List<Action> actionLog = new ArrayList<>();
-    @Singular Map<UUID, Player> players;
+    ArrayList<Player> players;
 
 
 

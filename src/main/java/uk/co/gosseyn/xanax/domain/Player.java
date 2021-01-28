@@ -2,10 +2,10 @@ package uk.co.gosseyn.xanax.domain;
 
 import lombok.AccessLevel;
 import lombok.Data;
-import lombok.NonNull;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.UUID;
 
@@ -15,6 +15,8 @@ public class Player implements HasGroups {
     UUID playerId = UUID.randomUUID();
     @NonFinal
     Game game;
-    @NonFinal
-    Collection<Zone> zones;
+    Collection<SocialGroup> socialGroups = new ArrayList<>();
+    public Player() {
+        this.socialGroups.add(new SocialGroup());
+    }
 }

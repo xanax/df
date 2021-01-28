@@ -30,11 +30,26 @@ public class GameService {
         Game game = Game.builder().map(map).build();
         Man man = new Man();
         mapService.placeItem(map, new Vector2d(0, 44), man);
+
         gameRepository.saveGame(game);
         return game;
     }
 
     public void update() {
+//        Goblin goblin = new Goblin(
+//                location,
+//                new Personality(),
+//                );
+//        Dwarf dwarf = new Dwarf();
+//
+//        SocialGroup christianity = new SocialGroup();
+//        christianity.addRegion(new Region().zones(zones));
+//        dwarf.AddGroupAlliance(0.566, christianity);
+
+        //user allocates zones then asssgns to zone capabilities of groups. eg if playe
+//        for() {
+//
+//        }
 
     }
 

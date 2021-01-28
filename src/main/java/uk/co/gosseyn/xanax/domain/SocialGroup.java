@@ -5,11 +5,11 @@ import lombok.Data;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
 
+import java.util.Collection;
+
 @Data
 @FieldDefaults(makeFinal=true, level= AccessLevel.PRIVATE)
-public class Alliance {
+public class SocialGroup implements HasZones {
     @NonFinal
-    float strength; // Strength of the alliance with the socialGroup
-    private Alliable alliable;
-    private SocialGroup socialGroup;
+    Collection<Zone> zones;
 }

@@ -21,6 +21,35 @@ Lumber
 
 maybe have a zone monitor that says eg if wood zone, if 50% cut create task to stockpile.
 
+dward fortress database is viewable eg all historical figures
+
+needs
+individual desires result in actions
+
+"In the year 256 the x was stolen by x"  - something like this in the story
+if dwarf goes missig, others realise it and try to finnd.
+thinngs get stolen annd you can conduct investigqtion
+pet animalss
+
+game loop
+    individual needs/wants have a threshold below which group activities are ignored and individual
+        needs take over.
+    groups level wants/needs result in tasks being generated for group.
+        eg
+            clan requires housing
+
+
+project
+    (instances)
+        christianity (provides faith)
+            requirements
+                worship
+                    requiremennts
+                        churches
+        clan x
+            food
+            housing
+            faith
 
 
 

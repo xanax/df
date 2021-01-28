@@ -7,13 +7,14 @@ import lombok.NonNull;
 import lombok.Setter;
 
 @Data
+@AllArgsConstructor
 public  class Vector3d {
-    @NonNull
-    private int x;
-    @NonNull
-    private int y;
-    @NonNull
-    private int z;
+    private int x = 0;
+    private int y = 0;
+    private int z = 0;
+
+    public Vector3d() {
+    }
 
     public Vector3d addx(int n) {
         this.x += n;
@@ -27,5 +28,4 @@ public  class Vector3d {
         this.z += n;
         return this;
     }
-
 }

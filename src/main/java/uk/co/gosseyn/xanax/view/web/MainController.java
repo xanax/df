@@ -1,5 +1,6 @@
 package uk.co.gosseyn.xanax.view.web;
 
+import com.sun.imageio.plugins.jpeg.JPEGImageReaderSpi;
 import lombok.var;
 import org.newdawn.slick.util.pathfinding.AStarPathFinder;
 import org.newdawn.slick.util.pathfinding.Path;
@@ -9,9 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import uk.co.gosseyn.xanax.domain.ForrestZone;
 import uk.co.gosseyn.xanax.domain.Game;
 import uk.co.gosseyn.xanax.domain.BlockMap;
 import uk.co.gosseyn.xanax.domain.Moveable;
+import uk.co.gosseyn.xanax.domain.Player;
 import uk.co.gosseyn.xanax.domain.Vector3d;
 import uk.co.gosseyn.xanax.service.GameService;
 import uk.co.gosseyn.xanax.service.MapService;
@@ -78,9 +81,13 @@ public class MainController {
     @RequestMapping("/newMap")
     public void newMap() {
         item = null;
-        gameId = gameService.newGame().getGameId();
+        Game game = gameService.newGame();
+        this.gameId = game.getGameId();
         var player = playerService.newPlayer();
+        playerService.savePlayer(player);
         playerId = player.getPlayerId();
+        game.getPlayers().add(player);
+
     }
 
     @RequestMapping("/findPath")
@@ -108,6 +115,13 @@ public class MainController {
                          @RequestParam int endy,
                          @RequestParam int endz) {
         BlockMap map = gameService.getGame(gameId).getMap();
+        Player player = playerService.getPlayer(playerId);
+        Vector3d location = new Vector3d(startx, starty, startz);
+        Vector3d extent = new Vector3d(endx, endy, endz);
 
+        ForrestZone zone = new ForrestZone();
+        zone.setLocation(location);
+        zone.setExtent(extent);
+        player.getSocialGroups().iterator().next().getZones();
     }
 }

@@ -2,6 +2,6 @@ package uk.co.gosseyn.xanax.domain;
 
 import java.util.Collection;
 
-public interface HasZones {
-    Collection<Zone> getZones();
+public interface HasNeeds {
+    Collection<Need> getNeeds();
 }
