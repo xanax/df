@@ -1,6 +1,5 @@
 package uk.co.gosseyn.xanax.service;
 
-import lombok.var;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.co.gosseyn.xanax.domain.Player;

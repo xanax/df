@@ -13,7 +13,7 @@ public class BlockMap implements TileBasedMap {
     public static int GRASS = 2;
     public static int WATER = 3;
 
-    private Vector3d size;
+    private Point size;
 
     // For simple stuff like rock/tree trunk/grass
     private int[] map;
@@ -21,7 +21,7 @@ public class BlockMap implements TileBasedMap {
     // For complex stuff and for where multiple items exist at single point. Expect most of the elements to be null
     private Set<Locatable>[] itemsMap;
 
-    public BlockMap(Vector3d size) {
+    public BlockMap(Point size) {
         this.size = size;
         map = new int[size.getX() * size.getY() * size.getZ()];
         itemsMap = new Set[size.getX() * size.getY() * size.getZ()];
@@ -31,19 +31,19 @@ public class BlockMap implements TileBasedMap {
 
     }
 
-    public int getBlock(Vector3d location) {
+    public int getBlock(Point location) {
         return map[(location.getZ() * size.getX() * size.getY()) + (location.getY() * size.getX()) + location.getX()];
     }
-    public void setBlock(Vector3d location, int block) {
+    public void setBlock(Point location, int block) {
         map[(location.getZ() * size.getX() * size.getY()) + (location.getY() * size.getX()) + location.getX()] = block;
     }
-    public Set<Locatable> getItem(Vector3d location) {
+    public Set<Locatable> getItem(Point location) {
         return itemsMap[(location.getZ() * size.getX() * size.getY()) + (location.getY() * size.getX()) + location.getX()];
     }
-    public void addItem(Vector3d location, Locatable item) {
+    public void addItem(Point location, Locatable item) {
         itemsMap[(location.getZ() * size.getX() * size.getY()) + (location.getY() * size.getX()) + location.getX()].add(item);
     }
-    public void removeItem(Vector3d location, Locatable item) {
+    public void removeItem(Point location, Locatable item) {
         itemsMap[(location.getZ() * size.getX() * size.getY()) + (location.getY() * size.getX()) + location.getX()].remove(item);
     }
 
@@ -68,7 +68,7 @@ public class BlockMap implements TileBasedMap {
     @Override
     public boolean blocked(final Mover mover, final int x, final int y) {
         int unit = ((UnitMover) mover).getType();
-        if(getBlock(new Vector3d(x, y, 4)) == GRASS) { // TODO Z
+        if(getBlock(new Point(x, y, 4)) == GRASS) { // TODO Z
             return false;
         } else {
         return true;

@@ -1,11 +1,17 @@
 package uk.co.gosseyn.xanax.domain;
 
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.FieldDefaults;
 
-@Data
+@Getter
+@Setter
 public abstract class Item extends GameObject implements Moveable {
     @Override
     public abstract int getCode();
-    private Vector3d location;
-    private Game game;
+    protected Point location;
+    protected Game game;
 }

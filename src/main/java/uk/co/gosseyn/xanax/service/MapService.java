@@ -3,8 +3,8 @@ package uk.co.gosseyn.xanax.service;
 import org.springframework.stereotype.Service;
 import uk.co.gosseyn.xanax.domain.Locatable;
 import uk.co.gosseyn.xanax.domain.BlockMap;
+import uk.co.gosseyn.xanax.domain.Point;
 import uk.co.gosseyn.xanax.domain.Vector2d;
-import uk.co.gosseyn.xanax.domain.Vector3d;
 import uk.co.gosseyn.xanax.repository.GameRepository;
 
 import javax.inject.Inject;
@@ -22,7 +22,7 @@ public class MapService {
     }
 
     public BlockMap newMap(int width, int height, int depth, double features) {
-        BlockMap map = new BlockMap(new Vector3d(width, height, depth));
+        BlockMap map = new BlockMap(new Point(width, height, depth));
         OpenSimplexNoise noise =
                 new OpenSimplexNoise();
         double max = Double.NEGATIVE_INFINITY;
@@ -36,9 +36,9 @@ public class MapService {
                 value = (int)(value * (depth + 1));
                 int i;
                 for (i = 0; i < (int)value - 1; i++) {
-                    map.setBlock(new Vector3d(x, y, i), ROCK); // TODO fill vertically with something
+                    map.setBlock(new Point(x, y, i), ROCK); // TODO fill vertically with something
                  }
-                map.setBlock(new Vector3d(x, y, i), GRASS);
+                map.setBlock(new Point(x, y, i), GRASS);
                 if(value > max) {
                     max = value;
                 }
@@ -52,7 +52,7 @@ public class MapService {
     }
 
     public void placeItem(BlockMap map, Vector2d location, Locatable item) {
-        Vector3d l = new Vector3d(location.getX(), location.getY(), 0);
+        Point l = new Point(location.getX(), location.getY(), 0);
         while(map.getBlock(l) != 0) {
             l.setZ(l.getZ() + 1);
         }

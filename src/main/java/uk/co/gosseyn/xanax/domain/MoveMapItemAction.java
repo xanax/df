@@ -9,9 +9,9 @@ import java.util.List;
 @Data
 public class MoveMapItemAction implements Action {
     @NonNull
-    private Vector3d from;
+    private Point from;
     @NonNull
-    private Vector3d offset;
+    private Point offset;
 
     @Override
     public List<Action> getSubActions() {

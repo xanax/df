@@ -1,8 +1,8 @@
 package uk.co.gosseyn.xanax.domain;
 
 public interface Locatable {
-    Vector3d getLocation();
+    Point getLocation();
     int getCode();
-    void setLocation(Vector3d location);
+    void setLocation(Point location);
 
 }

@@ -9,9 +9,9 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @FieldDefaults(level= AccessLevel.PRIVATE)
 public class Bounds {
-    Vector3d min;
-    Vector3d max;
-    public boolean contains(Vector3d point) {
+    Point min;
+    Point max;
+    public boolean contains(Point point) {
         return point.isGreaterOrEqual(min) && max.isGreaterOrEqual(point);
     }
     public int xLength() {
@@ -23,7 +23,7 @@ public class Bounds {
     public int zLength() {
         return max.getZ() - min.getZ();
     }
-    public Vector3d center() {
-        return new Vector3d(min.getX() + xLength() / 2, min.getY() + yLength() / 2, min.getZ() + zLength() / 2 );
+    public Point center() {
+        return new Point(min.getX() + xLength() / 2, min.getY() + yLength() / 2, min.getZ() + zLength() / 2 );
     }
 }

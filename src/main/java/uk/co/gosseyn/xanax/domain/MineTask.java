@@ -6,7 +6,6 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.newdawn.slick.util.pathfinding.Path;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,13 +31,16 @@ public class MineTask extends Task {
                     //TODO check if blocked
                     Path.Step step = moveable.getPath().getStep(moveable.getPathStep());
                     BlockMap map = game.getMap();
-                    map.removeItem(new Vector3d(moveable.getLocation().getX(),
+                    map.removeItem(new Point(moveable.getLocation().getX(),
                             moveable.getLocation().getY(),
                             moveable.getLocation().getZ()),moveable);
-                    Vector3d newLocation = new Vector3d(step.getX(), step.getY(), moveable.getLocation().getZ());
+                    Point newLocation = new Point(step.getX(), step.getY(), moveable.getLocation().getZ());
                     map.addItem(newLocation, moveable);
                     moveable.setLocation(newLocation);
-                    // TODO: check if arrived (within bounds)
+                    if(bounds.contains(moveable.getLocation())) {
+                        moveable.setPath(null);
+                        moveable.setPathStep(0);
+                    }
                 }
             }
         }

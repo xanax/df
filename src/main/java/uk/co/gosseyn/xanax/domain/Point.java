@@ -3,34 +3,31 @@ package uk.co.gosseyn.xanax.domain;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level= AccessLevel.PRIVATE)
-public  class Vector3d {
+public  class Point {
     int x = 0;
     int y = 0;
     int z = 0;
 
-    public boolean isGreaterOrEqual(Vector3d point) {
+    public boolean isGreaterOrEqual(Point point) {
         return x >= point.x && y >= point.y && z >= point.z;
     }
 
-    public Vector3d addx(int n) {
+    public Point addx(int n) {
         this.x += n;
         return this;
     }
-    public Vector3d addy(int n) {
+    public Point addy(int n) {
         this.y += n;
         return this;
     }
-    public Vector3d addz(int n) {
+    public Point addz(int n) {
         this.z += n;
         return this;
     }
