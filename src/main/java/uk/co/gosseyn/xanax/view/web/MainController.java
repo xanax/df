@@ -7,21 +7,35 @@ import org.newdawn.slick.util.pathfinding.Path;
 import org.newdawn.slick.util.pathfinding.PathFinder;
 import org.newdawn.slick.util.pathfinding.example.UnitMover;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import uk.co.gosseyn.xanax.domain.Bounds;
+import uk.co.gosseyn.xanax.domain.CanJoinSocialGroup;
 import uk.co.gosseyn.xanax.domain.ForrestZone;
 import uk.co.gosseyn.xanax.domain.Game;
 import uk.co.gosseyn.xanax.domain.BlockMap;
+import uk.co.gosseyn.xanax.domain.HasNeeds;
+import uk.co.gosseyn.xanax.domain.Man;
+import uk.co.gosseyn.xanax.domain.MineTask;
 import uk.co.gosseyn.xanax.domain.Moveable;
 import uk.co.gosseyn.xanax.domain.Player;
+import uk.co.gosseyn.xanax.domain.SocialGroup;
+import uk.co.gosseyn.xanax.domain.Task;
+import uk.co.gosseyn.xanax.domain.TaskAssignable;
+import uk.co.gosseyn.xanax.domain.Vector2d;
 import uk.co.gosseyn.xanax.domain.Vector3d;
 import uk.co.gosseyn.xanax.service.GameService;
 import uk.co.gosseyn.xanax.service.MapService;
 import uk.co.gosseyn.xanax.service.PlayerService;
 
 import javax.inject.Inject;
+import java.util.Collection;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RestController
 public class MainController {
@@ -53,18 +67,40 @@ public class MainController {
                               @RequestParam int width,
                               @RequestParam int height) {
         Game game = gameService.getGame(gameId);
-        BlockMap map = game.getMap();
+        if(game == null) {
+            throw new IllegalArgumentException("Game does not exist.");
+        }
+        for(TaskAssignable taskDoer: game.getTaskDoers()) {
+            if(taskDoer.getCurrentTask() != null) {
+                taskDoer.getCurrentTask().perform(game);
+            }
+        }
 
-        if (left < 0) {
-            left = 0;
-        } else if (left > map.getWidthInTiles() - width) {
-            left = map.getWidthInTiles() - width;
+        for(SocialGroup group : game.getSocialGroups()) {
+
+            Collection<Task> unassigned = group.getTasks().stream()
+                    .filter(t -> t.getAssignees().isEmpty()).collect(Collectors.toList());
+
+            Collection<TaskAssignable> potentialAssignees =  group.getMembers().stream()
+                    .filter(t -> t instanceof TaskAssignable && ((TaskAssignable) t).getCurrentTask() == null)
+                    .map(TaskAssignable.class::cast).collect(Collectors.toList());
+
+            // TODO logic to determine best / who's able
+            if(!potentialAssignees.isEmpty() && !unassigned.isEmpty()) {
+                TaskAssignable assignee = potentialAssignees.iterator().next();
+                Task task = unassigned.iterator().next();
+                task.getAssignees().add(assignee);
+                assignee.setCurrentTask(task);
+            }
+            //TODO process group level needs
+            for(CanJoinSocialGroup member : group.getMembers()) {
+                // TODO process individual needs
+            }
+
         }
-        if (top < 0) {
-            top = 0;
-        } else if (top > map.getHeightInTiles() - height) {
-            top = map.getHeightInTiles() - height;
-        }
+
+
+        BlockMap map = game.getMap();
         if(item != null && item.getPath() != null && item.getPathStep() < item.getPath().getLength()) {
             item.setPathStep(item.getPathStep() + 1); // first one contains current
             Path.Step step = item.getPath().getStep(item.getPathStep());
@@ -81,12 +117,22 @@ public class MainController {
     @RequestMapping("/newMap")
     public void newMap() {
         item = null;
-        Game game = gameService.newGame();
+        BlockMap map =  mapService.newMap(100, 100, 8, 15);
+
+        Man man = new Man();
+        mapService.placeItem(map, new Vector2d(0, 44), man);
+
+        Game game = gameService.newGame(map);
         this.gameId = game.getGameId();
         var player = playerService.newPlayer();
+        game.getSocialGroups().addAll(player.getSocialGroups());
+        player.setGame(game);
+        player.getSocialGroups().iterator().next().getMembers().add(man);
+        game.getTaskDoers().add(man);
         playerService.savePlayer(player);
         playerId = player.getPlayerId();
         game.getPlayers().add(player);
+        gameService.saveGame(game);
 
     }
 
@@ -116,12 +162,16 @@ public class MainController {
                          @RequestParam int endz) {
         BlockMap map = gameService.getGame(gameId).getMap();
         Player player = playerService.getPlayer(playerId);
-        Vector3d location = new Vector3d(startx, starty, startz);
-        Vector3d extent = new Vector3d(endx, endy, endz);
 
         ForrestZone zone = new ForrestZone();
-        zone.setLocation(location);
-        zone.setExtent(extent);
-        player.getSocialGroups().iterator().next().getZones();
+        //zone.setLocation(location);
+        //zone.setExtent(extent);
+        //player.getSocialGroups().iterator().next().getZones().add(zone);
+        Vector3d min = new Vector3d(startx, starty, startz);
+        Vector3d max = new Vector3d(endx, endy, endz);
+        MineTask mineTask = new MineTask(new Bounds(min, max));
+
+        player.getSocialGroups().iterator().next().getTasks().add(mineTask);
+
     }
 }

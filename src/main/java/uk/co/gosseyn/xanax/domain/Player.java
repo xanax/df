@@ -17,6 +17,6 @@ public class Player implements HasGroups {
     Game game;
     Collection<SocialGroup> socialGroups = new ArrayList<>();
     public Player() {
-        this.socialGroups.add(new SocialGroup());
+        this.socialGroups.add(new SocialGroup(this));
     }
 }

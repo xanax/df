@@ -17,13 +17,15 @@ import java.util.List;
 
 @Data
 @FieldDefaults(makeFinal=true, level= AccessLevel.PRIVATE)
-public class Man extends Item implements TaskAssignable, HasBehaviour, Moveable, Alliable, HasNeeds {
+public class Man extends Item implements TaskAssignable, HasBehaviour, Moveable, Alliable, HasNeeds, CanJoinSocialGroup, NeedsFood {
     @NonFinal
     Path path;
     @NonFinal
     int pathStep;
     Collection<Alliance> alliances = new ArrayList<>();
     Collection<Need> needs = new ArrayList<>();
+    @NonFinal
+    Task currentTask;
 
     // Location man will come back to after wandering a little.
     Vector3d baseLocation = new Vector3d();

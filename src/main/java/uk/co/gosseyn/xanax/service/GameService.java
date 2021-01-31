@@ -9,6 +9,7 @@ import uk.co.gosseyn.xanax.domain.Player;
 import uk.co.gosseyn.xanax.domain.Vector2d;
 import uk.co.gosseyn.xanax.repository.GameRepository;
 
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -24,17 +25,15 @@ public class GameService {
         return gameRepository.getGame(gameId);
     }
 
-    public Game newGame() {
-        BlockMap map =  mapService.newMap(100, 100, 8, 15);
-
+    public Game newGame(BlockMap map) {
         Game game = Game.builder().map(map).build();
-        Man man = new Man();
-        mapService.placeItem(map, new Vector2d(0, 44), man);
-
         gameRepository.saveGame(game);
         return game;
     }
 
+    public void saveGame(Game game) {
+        gameRepository.saveGame(game);
+    }
     public void update() {
 //        Goblin goblin = new Goblin(
 //                location,

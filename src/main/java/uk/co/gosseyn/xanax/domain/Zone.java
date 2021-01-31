@@ -7,7 +7,6 @@ import lombok.experimental.FieldDefaults;
 
 @Data
 @FieldDefaults(level= AccessLevel.PROTECTED)
-
 public abstract class Zone {
     Vector3d location;
     Vector3d extent;

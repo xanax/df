@@ -22,6 +22,18 @@ public class GameFacade {
         frameData.setMap(new List[screenWidthInTiles][screenHeightInTiles]);
 
         BlockMap map = game.getMap();
+
+        if (xTileOffset < 0) {
+            xTileOffset = 0;
+        } else if (xTileOffset > map.getWidthInTiles() - screenWidthInTiles) {
+            xTileOffset = map.getWidthInTiles() - screenWidthInTiles;
+        }
+        if (yTileOffset < 0) {
+            yTileOffset = 0;
+        } else if (yTileOffset > map.getHeightInTiles() - screenHeightInTiles) {
+            yTileOffset = map.getHeightInTiles() - screenHeightInTiles;
+        }
+
         for (int y = yTileOffset; y < yTileOffset + screenHeightInTiles; y++) {
             for (int x = xTileOffset; x < xTileOffset + screenWidthInTiles; x++) {
                 int view;
