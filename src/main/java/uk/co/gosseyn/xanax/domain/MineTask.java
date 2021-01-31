@@ -30,13 +30,8 @@ public class MineTask extends Task {
                     moveable.setPathStep(moveable.getPathStep() + 1); // first one contains current
                     //TODO check if blocked
                     Path.Step step = moveable.getPath().getStep(moveable.getPathStep());
-                    BlockMap map = game.getMap();
-                    map.removeItem(new Point(moveable.getLocation().getX(),
-                            moveable.getLocation().getY(),
-                            moveable.getLocation().getZ()),moveable);
-                    Point newLocation = new Point(step.getX(), step.getY(), moveable.getLocation().getZ());
-                    map.addItem(newLocation, moveable);
-                    moveable.setLocation(newLocation);
+                    game.getChanges().add(new MoveBlockChange(moveable, new Point(step.getX(), step.getY(),
+                            moveable.getLocation().getZ())));
                     if(bounds.contains(moveable.getLocation())) {
                         moveable.setPath(null);
                         moveable.setPathStep(0);

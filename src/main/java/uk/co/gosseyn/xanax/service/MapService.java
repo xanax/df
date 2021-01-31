@@ -54,9 +54,9 @@ public class MapService {
     public void placeItem(BlockMap map, Vector2d location, Locatable item) {
         Point l = new Point(location.getX(), location.getY(), 0);
         while(map.getBlock(l) != 0) {
-            l.setZ(l.getZ() + 1);
+            l.addz(1);
         }
-        l.setZ(l.getZ() -1);
+        l.addz(-1);
         item.setLocation(l);
         map.addItem(l, item);
     }

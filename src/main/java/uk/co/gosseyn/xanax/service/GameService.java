@@ -2,6 +2,7 @@ package uk.co.gosseyn.xanax.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import uk.co.gosseyn.xanax.domain.Change;
 import uk.co.gosseyn.xanax.domain.Game;
 import uk.co.gosseyn.xanax.domain.Man;
 import uk.co.gosseyn.xanax.domain.BlockMap;
@@ -34,22 +35,13 @@ public class GameService {
     public void saveGame(Game game) {
         gameRepository.saveGame(game);
     }
-    public void update() {
-//        Goblin goblin = new Goblin(
-//                location,
-//                new Personality(),
-//                );
-//        Dwarf dwarf = new Dwarf();
-//
-//        SocialGroup christianity = new SocialGroup();
-//        christianity.addRegion(new Region().zones(zones));
-//        dwarf.AddGroupAlliance(0.566, christianity);
 
-        //user allocates zones then asssgns to zone capabilities of groups. eg if playe
-//        for() {
-//
-//        }
-
+    public void update(Game game) {
+        //TODO conflict resolution for when two items move to same place.
+        for(Change change : game.getChanges()) {
+            change.perform(game);
+        }
+        game.getChanges().clear();
     }
 
 }

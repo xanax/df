@@ -22,6 +22,10 @@ public class Game {
     UUID gameId = UUID.randomUUID();
 
     BlockMap map;
+    List<Change> changes = new ArrayList<>();
+
+
+
     List<Action> actionLog = new ArrayList<>();
     ArrayList<Player> players = new ArrayList<>();
     Collection<SocialGroup> socialGroups = new ArrayList<>();

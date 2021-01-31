@@ -93,7 +93,7 @@ public class MainController {
             for(CanJoinSocialGroup member : group.getMembers()) {
                 // TODO process individual needs
             }
-
+            gameService.update(game);
         }
 
 
