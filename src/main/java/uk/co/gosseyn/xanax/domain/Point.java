@@ -11,9 +11,9 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @FieldDefaults(level= AccessLevel.PRIVATE)
 public  class Point {
-    int x = 0;
-    int y = 0;
-    int z = 0;
+    int x;
+    int y;
+    int z;
 
     public boolean isGreaterOrEqual(Point point) {
         return x >= point.x && y >= point.y && z >= point.z;
@@ -30,5 +30,9 @@ public  class Point {
     public Point addz(int n) {
         this.z += n;
         return this;
+    }
+    @Override
+    public Point clone() {
+        return new Point(this.x, this.y, this.z);
     }
 }

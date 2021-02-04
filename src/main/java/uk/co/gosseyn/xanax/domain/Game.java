@@ -26,6 +26,7 @@ public class Game {
 
 
 
+    List<Active> activeItems = new ArrayList<>();
     List<Action> actionLog = new ArrayList<>();
     ArrayList<Player> players = new ArrayList<>();
     Collection<SocialGroup> socialGroups = new ArrayList<>();

@@ -4,10 +4,15 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.newdawn.slick.util.pathfinding.Path;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
+
+import static uk.co.gosseyn.xanax.domain.BlockMap.TREE;
 
 @Slf4j
 @Data
@@ -17,29 +22,31 @@ public class MineTask extends Task {
 
     @Override
     public void perform(Game game) {
-        List<Moveable> moveables = this.getAssignees().stream().map(Moveable.class::cast).collect(Collectors.toList());
-        log.debug("Task assignees: %s", moveables);
-        for(Moveable moveable : moveables) {
-            //TODO cancel any current paths
-            if(moveable.getPath() == null) {
-                if(!bounds.contains(moveable.getLocation())) {
-                    moveable.setPath(pathFinderService.findPath(game.getMap(), moveable.getLocation(), bounds.center()));
-                }
+
+        for(TaskAssignment taskAssignment : getTaskAssignments()) {
+            Moveable moveable = (Moveable) taskAssignment.getTaskAssignable();
+            if(!bounds.contains(moveable.getLocation())) {
+                taskAssignment.setStatus(MineTaskStatus.MOVING_TO_ZONE);
+                moveable.setPath(pathFinderService.findPath(game.getMap(), moveable.getLocation(), bounds.center()));
+                moveable.setPathStep(0);
+                //TODO
             } else {
-                if(moveable.getPathStep() < moveable.getPath().getLength()) {
-                    moveable.setPathStep(moveable.getPathStep() + 1); // first one contains current
-                    //TODO check if blocked
-                    Path.Step step = moveable.getPath().getStep(moveable.getPathStep());
-                    game.getChanges().add(new MoveBlockChange(moveable, new Point(step.getX(), step.getY(),
-                            moveable.getLocation().getZ())));
-                    if(bounds.contains(moveable.getLocation())) {
-                        moveable.setPath(null);
-                        moveable.setPathStep(0);
-                    }
-                }
+                taskAssignment.setStatus(MineTaskStatus.MOVING_TO_ITEM);
+                moveable.setPath(mapService.pathToNearestBlock(game.getMap(), moveable.getLocation(), TREE, bounds));
             }
         }
+    }
 
-        System.out.println(this.getAssignees()+"mining");
+    public enum MineTaskStatus implements TaskStatus  {
+        START(1), MOVING_TO_ZONE(2), MOVING_TO_ITEM(3);
+
+        int status;
+        MineTaskStatus(int s) {
+             status = s;
+        }
+        @Override
+        public int getStatus() {
+            return status;
+        }
     }
 }

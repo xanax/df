@@ -14,7 +14,7 @@ public class PlayerService {
     private PlayerRepository playerRepository;
 
     public Player newPlayer() {
-        var player = new Player();
+        Player player = new Player();
         return player;
     }
     public void savePlayer(Player player) {

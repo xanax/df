@@ -87,16 +87,18 @@ function refresh() {
                     card.style.backgroundColor = "white";
                 } else if(map.map[x][y][0] > 101) {
                     card.style.backgroundColor = "lightgray";
+                } else if(map.map[x][y][0] == 4) {
+                    card.innerHTML = '^';
                 } else if(map.map[x][y][0] > 1) {
                     card.style.backgroundColor = "gray";
                 } else {
                     card.style.backgroundColor = "black";
                 }
-
+                //addClass(card, map.map[x][y][0]);
                 if(map.map[x][y].length > 1 ) {
                     card.innerHTML = 'X';
                 } else {
-                card.innerHTML = '';
+                    card.innerHTML = '';
                 }
                 //document.getElementById("1").innerHTML = '&#9786';
                 //addClass(document.getElementById("1"), 'bold');

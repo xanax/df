@@ -1,6 +1,7 @@
 package uk.co.gosseyn.xanax.domain;
 
+import java.util.Collection;
+
 public interface TaskAssignable {
-    Task getCurrentTask();
-    void setCurrentTask(Task task);
+    Collection<TaskAssignment> getTaskAssignments();
 }

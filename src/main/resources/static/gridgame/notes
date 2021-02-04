@@ -1,3 +1,9 @@
+procedurally generated sprites
+
+circular and odd shaped zones
+closure screen giving stats
+memory
+
 have ability to partial match path eg if enemy knows best way to get in ie door/window s . pathfinder.
 
 click on stuff on the landscape and select what to do with it eg chop wood, attack bear. agent will be intelligently

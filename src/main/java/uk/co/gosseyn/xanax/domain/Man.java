@@ -1,7 +1,6 @@
 package uk.co.gosseyn.xanax.domain;
 
 import lombok.AccessLevel;
-import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -18,16 +17,10 @@ import java.util.List;
 @Setter
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal=true, level= AccessLevel.PRIVATE)
-public class Man extends Item implements TaskAssignable, HasBehaviour, Moveable, Alliable, HasNeeds, CanJoinSocialGroup, Nameable {
-    @NonFinal
-    Path path;
-    @NonFinal
-    int pathStep;
+public class Man extends Creature implements HasBehaviour, Alliable, HasNeeds, CanJoinSocialGroup, Nameable {
+    String name;
     Collection<Alliance> alliances = new ArrayList<>();
     Collection<Need> needs = new ArrayList<>();
-    @NonFinal
-    Task currentTask;
-    String name;
 
     // Location man will come back to after wandering a little.
     Point baseLocation = new Point();

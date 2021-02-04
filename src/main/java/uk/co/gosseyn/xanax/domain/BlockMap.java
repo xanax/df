@@ -1,17 +1,19 @@
 package uk.co.gosseyn.xanax.domain;
 
+import lombok.extern.slf4j.Slf4j;
 import org.newdawn.slick.util.pathfinding.Mover;
 import org.newdawn.slick.util.pathfinding.TileBasedMap;
 import org.newdawn.slick.util.pathfinding.example.UnitMover;
 
 import java.util.HashSet;
 import java.util.Set;
-
-public class BlockMap implements TileBasedMap {
+@Slf4j
+public class BlockMap extends Bounds implements TileBasedMap {
 
     public static int ROCK = 1;
     public static int GRASS = 2;
     public static int WATER = 3;
+    public static int TREE = 4;
 
     private Point size;
 
@@ -22,6 +24,7 @@ public class BlockMap implements TileBasedMap {
     private Set<Locatable>[] itemsMap;
 
     public BlockMap(Point size) {
+        super(new Point(0,0, 0), size.clone().addx(-1).addy(-1).addz(-1));
         this.size = size;
         map = new int[size.getX() * size.getY() * size.getZ()];
         itemsMap = new Set[size.getX() * size.getY() * size.getZ()];
@@ -62,7 +65,7 @@ public class BlockMap implements TileBasedMap {
 
     @Override
     public void pathFinderVisited(final int x, final int y) {
-
+        log.trace("Path finder visited x %d y %d", x ,y);
     }
 
     @Override

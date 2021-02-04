@@ -21,6 +21,7 @@ import uk.co.gosseyn.xanax.domain.Point;
 import uk.co.gosseyn.xanax.domain.SocialGroup;
 import uk.co.gosseyn.xanax.domain.Task;
 import uk.co.gosseyn.xanax.domain.TaskAssignable;
+import uk.co.gosseyn.xanax.domain.TaskAssignment;
 import uk.co.gosseyn.xanax.domain.Vector2d;
 import uk.co.gosseyn.xanax.service.GameService;
 import uk.co.gosseyn.xanax.service.MapService;
@@ -29,8 +30,13 @@ import uk.co.gosseyn.xanax.service.PlayerService;
 
 import javax.inject.Inject;
 import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
+
+import static uk.co.gosseyn.xanax.domain.BlockMap.TREE;
 
 @RestController
 public class MainController {
@@ -65,29 +71,26 @@ public class MainController {
                               @RequestParam int height) {
         Game game = gameService.getGame(gameId);
         if(game == null) {
-            throw new IllegalArgumentException("Game does not exist.");
+            this.newMap();
         }
-        for(TaskAssignable taskDoer: game.getTaskDoers()) {
-            if(taskDoer.getCurrentTask() != null) {
-                taskDoer.getCurrentTask().perform(game);
-            }
-        }
-
         for(SocialGroup group : game.getSocialGroups()) {
 
-            Collection<Task> unassigned = group.getTasks().stream()
-                    .filter(t -> t.getAssignees().isEmpty()).collect(Collectors.toList());
+            group.getTasks().forEach(t -> t.perform(game));
 
-            Collection<TaskAssignable> potentialAssignees =  group.getMembers().stream()
-                    .filter(t -> t instanceof TaskAssignable && ((TaskAssignable) t).getCurrentTask() == null)
-                    .map(TaskAssignable.class::cast).collect(Collectors.toList());
+            Collection<TaskAssignable> potentialAssignees = group.getMembers().stream()
+                    .filter(m -> m instanceof TaskAssignable).map(TaskAssignable.class::cast)
+                    .collect(Collectors.toList());
+
+            Collection<Task> unassigned = group.getTasks().stream().filter(t -> t.getTaskAssignments().isEmpty())
+                    .collect(Collectors.toList());
 
             // TODO logic to determine best / who's able
             if(!potentialAssignees.isEmpty() && !unassigned.isEmpty()) {
                 TaskAssignable assignee = potentialAssignees.iterator().next();
                 Task task = unassigned.iterator().next();
-                task.getAssignees().add(assignee);
-                assignee.setCurrentTask(task);
+                TaskAssignment taskAssignment = new TaskAssignment(task, assignee);
+                task.getTaskAssignments().add(taskAssignment);
+                assignee.getTaskAssignments().add(taskAssignment);
             }
             //TODO process group level needs
             for(CanJoinSocialGroup member : group.getMembers()) {
@@ -119,7 +122,10 @@ public class MainController {
         Man man = new Man(nameService.newName());
         mapService.placeItem(map, new Vector2d(0, 44), man);
 
+        mapService.placeBlock(map, new Vector2d(8, 49), TREE);
+
         Game game = gameService.newGame(map);
+        game.getActiveItems().add(man);
         this.gameId = game.getGameId();
         Player player = playerService.newPlayer();
         game.getSocialGroups().addAll(player.getSocialGroups());
