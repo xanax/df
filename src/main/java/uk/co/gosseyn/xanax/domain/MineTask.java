@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.newdawn.slick.util.pathfinding.Path;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -26,13 +27,22 @@ public class MineTask extends Task {
         for(TaskAssignment taskAssignment : getTaskAssignments()) {
             Moveable moveable = (Moveable) taskAssignment.getTaskAssignable();
             if(!bounds.contains(moveable.getLocation())) {
+                // Not in zone, find route
                 taskAssignment.setStatus(MineTaskStatus.MOVING_TO_ZONE);
                 moveable.setPath(pathFinderService.findPath(game.getMap(), moveable.getLocation(), bounds.center()));
                 moveable.setPathStep(0);
-                //TODO
+            } else if(taskAssignment.getStatus() == MineTaskStatus.MOVING_TO_ITEM) {
+                if(moveable.getPath().getLength() - 2 == moveable.getPathStep()) { // first is players current and last is target
+                    Path.Step nextStep = moveable.getPath().getStep(moveable.getPathStep()+1);
+                    Point nextPoint = new Point(nextStep.getX(), nextStep.getY(),
+                            moveable.getLocation().getZ());
+                    game.getChanges().add(new MineBlockChange(nextPoint));
+                    moveable.setPath(null);
+                }
             } else {
                 taskAssignment.setStatus(MineTaskStatus.MOVING_TO_ITEM);
                 moveable.setPath(mapService.pathToNearestBlock(game.getMap(), moveable.getLocation(), TREE, bounds));
+                moveable.setPathStep(0);
             }
         }
     }

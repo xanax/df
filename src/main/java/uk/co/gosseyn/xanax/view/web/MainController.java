@@ -75,12 +75,10 @@ public class MainController {
         }
         for(SocialGroup group : game.getSocialGroups()) {
 
-            group.getTasks().forEach(t -> t.perform(game));
-
             Collection<TaskAssignable> potentialAssignees = group.getMembers().stream()
                     .filter(m -> m instanceof TaskAssignable).map(TaskAssignable.class::cast)
                     .collect(Collectors.toList());
-
+            // TODO need to assign > 1 to a tasks
             Collection<Task> unassigned = group.getTasks().stream().filter(t -> t.getTaskAssignments().isEmpty())
                     .collect(Collectors.toList());
 
@@ -96,6 +94,8 @@ public class MainController {
             for(CanJoinSocialGroup member : group.getMembers()) {
                 // TODO process individual needs
             }
+            group.getTasks().forEach(t -> t.perform(game));
+
             gameService.update(game);
         }
 
