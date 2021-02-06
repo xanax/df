@@ -36,6 +36,7 @@ import java.util.UUID;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
+import static java.util.Arrays.asList;
 import static uk.co.gosseyn.xanax.domain.BlockMap.TREE;
 
 @RestController
@@ -84,11 +85,12 @@ public class MainController {
 
             // TODO logic to determine best / who's able
             if(!potentialAssignees.isEmpty() && !unassigned.isEmpty()) {
-                TaskAssignable assignee = potentialAssignees.iterator().next();
                 Task task = unassigned.iterator().next();
-                TaskAssignment taskAssignment = new TaskAssignment(task, assignee);
-                task.getTaskAssignments().add(taskAssignment);
-                assignee.getTaskAssignments().add(taskAssignment);
+                for(TaskAssignable assignee : potentialAssignees) {
+                    TaskAssignment taskAssignment = new TaskAssignment(task, assignee);
+                    task.getTaskAssignments().add(taskAssignment);
+                    assignee.getTaskAssignments().add(taskAssignment);
+                }
             }
             //TODO process group level needs
             for(CanJoinSocialGroup member : group.getMembers()) {
@@ -120,18 +122,26 @@ public class MainController {
         BlockMap map =  mapService.newMap(100, 100, 8, 15);
 
         Man man = new Man(nameService.newName());
+        Man man2 = new Man(nameService.newName());
         mapService.placeItem(map, new Vector2d(0, 44), man);
+        mapService.placeItem(map, new Vector2d(3, 45), man2);
 
         mapService.placeBlock(map, new Vector2d(8, 49), TREE);
 
+        mapService.placeBlock(map, new Vector2d(9, 48), TREE);
+        mapService.placeBlock(map, new Vector2d(11, 50), TREE);
+        mapService.placeBlock(map, new Vector2d(19, 51), TREE);
+        mapService.placeBlock(map, new Vector2d(6, 55), TREE);
+
         Game game = gameService.newGame(map);
         game.getActiveItems().add(man);
+        game.getActiveItems().add(man2);
         this.gameId = game.getGameId();
         Player player = playerService.newPlayer();
         game.getSocialGroups().addAll(player.getSocialGroups());
         player.setGame(game);
-        player.getSocialGroups().iterator().next().getMembers().add(man);
-        game.getTaskDoers().add(man);
+        player.getSocialGroups().iterator().next().getMembers().addAll(asList(man, man2));
+        game.getTaskDoers().addAll(asList(man, man2));
         playerService.savePlayer(player);
         playerId = player.getPlayerId();
         game.getPlayers().add(player);

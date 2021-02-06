@@ -3,7 +3,7 @@
 
 body{
 	font-family:arial;
-	background:#888888;
+	background: gray;
 }
 
 #spelplan{
@@ -50,5 +50,5 @@ body{
     font-size: large;
 	border-style: solid;
 	border-width: 1;
-	border-color: black;
+	border-color: white;
 }

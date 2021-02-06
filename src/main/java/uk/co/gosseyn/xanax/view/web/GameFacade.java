@@ -19,7 +19,8 @@ public class GameFacade {
 
     public FrameData getFrameData(Game game, int xTileOffset, int yTileOffset, int zTileOffset, int screenWidthInTiles, int screenHeightInTiles) {
         FrameData frameData = new FrameData();
-        frameData.setMap(new List[screenWidthInTiles][screenHeightInTiles]);
+        frameData.setTiles(new int[screenWidthInTiles*screenHeightInTiles]);
+        frameData.setHeights(new int[screenWidthInTiles*screenHeightInTiles]);
 
         BlockMap map = game.getMap();
 
@@ -36,40 +37,21 @@ public class GameFacade {
 
         for (int y = yTileOffset; y < yTileOffset + screenHeightInTiles; y++) {
             for (int x = xTileOffset; x < xTileOffset + screenWidthInTiles; x++) {
-                int view;
-
-                int current = map.getBlock(new Point(x, y, zTileOffset));
-
-                if (current != 0 && (zTileOffset == map.getDepthInTiles() - 1 ||
-                        map.getBlock(new Point(x, y, zTileOffset +1)) == 0)) {
-                    // current block full and nothing above
-                    view = current;
-                } else if (current == 0 && map.getBlock(new Point(x, y, zTileOffset - 1)) != 0) {
-                    // current empty and below contains block
-                    view = map.getBlock(new Point(x, y, zTileOffset - 1)) + 100;
-                } else if (current == 0) {
-                    // just space
-                    view = -1;
+                int screenTileX = x - xTileOffset;
+                int screenTileY = y - yTileOffset;
+                int screenTileIndex = screenTileY * screenWidthInTiles + screenTileX;
+                Point point = new Point(x, y, zTileOffset);
+                while(map.getBlock(point) == 0 && map.getItem(point).isEmpty() && point.getZ() > 0) {
+                    point.addz(-1);
+                }
+                if(point.getZ() == 0) {
+                    frameData.getTiles()[screenTileIndex] = map.getBlock(new Point(x, y, zTileOffset));
+                } else if(!map.getItem(point).isEmpty()) {
+                    frameData.getTiles()[screenTileIndex] = map.getItem(point).iterator().next().getCode();
                 } else {
-                    // embedded
-                    view = 0;
+                    frameData.getTiles()[screenTileIndex] = map.getBlock(point);
                 }
-                frameData.getMap()[x - xTileOffset][y - yTileOffset] = new ArrayList<>();
-
-                frameData.getMap()[x - xTileOffset][y - yTileOffset].add(view);
-                Point location = new Point(x, y, zTileOffset);
-                if (!map.getItem(location).isEmpty()) {
-                    // TODO
-                    frameData.getMap()[x - xTileOffset][y - yTileOffset]
-                            .addAll(singleton(map.getItem(location).iterator().next().getCode()));
-                }
-                location = new Point(x, y, zTileOffset -1);
-                if (zTileOffset > 1 && !map.getItem(location).isEmpty()) {
-                    // TODO
-                    frameData.getMap()[x - xTileOffset][y - yTileOffset]
-                            .addAll(singleton(map.getItem(location).iterator().next().getCode()));
-                }
-
+                frameData.getHeights()[screenTileIndex] = point.getZ();
             }
         }
         return frameData;

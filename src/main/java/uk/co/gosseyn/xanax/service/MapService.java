@@ -79,7 +79,7 @@ public class MapService {
     //                              543
     //
 
-    public Path pathToNearestBlock(BlockMap map, final Point location, int block, final Bounds bounds) {
+    public Path pathToNearestBlock(BlockMap map, final Point location, int block, final Bounds bounds, Set<Point> except) {
         // TODO make 3d (search z-1 then z+1 then z-2 then z+2
         Point current = location.clone();
         int length = 0;
@@ -99,7 +99,7 @@ public class MapService {
                     // If within bounds and is block and the path isn't blocked, return path
                     if (bounds.contains(current)) {
                         withinBounds = true;
-                        if (map.getBlock(current) == block) {
+                        if (map.getBlock(current) == block && !except.contains(current)) {
                             Path path = pathFinderService.findPath(map, location, current);
                             if (path != null) {
                                 return path;

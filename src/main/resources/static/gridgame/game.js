@@ -11,8 +11,8 @@ var selectionz;
 var mode = 'navigate';
 
 var x = 0;
-var y = 0;
-var z = 4;
+var y = 40;
+var z = 5;
 var width = 24;
 var height = 20;
 var code = '';
@@ -76,30 +76,53 @@ function refresh() {
           height: height
         },
         success: function(data){
-          map = JSON.parse(data);
+          var allData = JSON.parse(data);
+          var tiles = allData.tiles;
+          var heights = allData.heights;
             for(var y = 0; y < height; y++) {
                 for(var x = 0; x < width; x++) {
                 var id = x + y * width;
-                //i = map.map[x][y] * 32;
-                //newItem.style.backgroundPosition = i+'px 0px';
                 var card = document.getElementById(id);
-                if(map.map[x][y][0] == -1) {
-                    card.style.backgroundColor = "white";
-                } else if(map.map[x][y][0] > 101) {
-                    card.style.backgroundColor = "lightgray";
-                } else if(map.map[x][y][0] == 4) {
-                    card.innerHTML = '^';
-                } else if(map.map[x][y][0] > 1) {
-                    card.style.backgroundColor = "gray";
-                } else {
-                    card.style.backgroundColor = "black";
+                if(heights[id] == z) {
+                    opacity = "1";
+                } else if(heights[id] == z-1) {
+                    opacity = "0.5";
+                } else if(heights[id] == z-2) {
+                    opacity = "0.25";
                 }
-                //addClass(card, map.map[x][y][0]);
-                if(map.map[x][y].length > 1 ) {
-                    card.innerHTML = 'X';
-                } else {
-                    card.innerHTML = '';
-                }
+
+                if(heights[id] <= z && heights[id] >= z - 2) {
+                    if(tiles[id] == '2') {
+                        card.innerHTML = '<image src="path-tile.png" style="opacity: '+opacity+';"></image>';
+                    } else if(tiles[id] == '1') { // ROCK
+                        card.innerHTML = '<image src="black.png" style="opacity: '+opacity+';"></image>';
+                    } else if(tiles[id] == '6') {
+                        card.innerHTML = '<image src="brutal-helm.png" style="opacity: '+opacity+';"></image>';
+                    } else if(tiles[id] == '4') {
+                        card.innerHTML = '<image src="beech.png" style="opacity: '+opacity+';"></image>';
+                    } else {
+                    }
+              } else if(heights[id] < z - 2) {
+                card.innerHTML = '<image src="black.png" style="opacity: 0.2;"></image>';
+              } else {
+                  card.innerHTML = '<image src="black.png"></image>';
+              }
+//                } else if(map.map[x][y][0] > 101) {
+//                   //card.style.backgroundColor = "lightgray";
+//                    card.innerHTML = '<image src="path-tile.png" style="opacity: 0.5;"></image>';
+//                } else if(map.map[x][y][0] == 4) {
+//                   // card.innerHTML = '^';
+//                } else if(map.map[x][y][0] > 1) {
+//                    card.innerHTML = '<image src="grass.png"></image>';
+//                } else {
+//                    card.innerHTML = '<image src="path-tile.png"></image>';
+//                   // card.style.backgroundColor = "black";
+//                }
+//                //addClass(card, map.map[x][y][0]);
+//                if(map.map[x][y].length > 1 ) {
+//                    card.innerHTML = '<image src="brutal-helm.png"></image>';
+//                } else {
+//                }
                 //document.getElementById("1").innerHTML = '&#9786';
                 //addClass(document.getElementById("1"), 'bold');
             }
@@ -181,6 +204,10 @@ function refresh() {
 		        } else {
 		            mode = 'cursor';
 		            cursor.style.display = 'block';
+		            cursorx = width/2;
+		            cursory = height / 2;
+                    cursor.style.left = (cursorx * 24) + 'px';
+                    cursor.style.top = (cursory * 24) + 'px';
 		        }
 		        break;
 			case keys.up:
@@ -211,8 +238,18 @@ function refresh() {
 		    if(mode == 'cursor') {
                 cursorx += dx;
                 cursory += dy;
-                cursor.style.left = (cursorx * 24) + 'px';
-                cursor.style.top = (cursory * 24) + 'px';
+                if(selectionx == -1) {
+                    cursor.style.left = (cursorx * 24) + 'px';
+                    cursor.style.top = (cursory * 24) + 'px';
+                    cursor.style.width = '24px';
+                    cursor.style.height = '24px';
+                } else {
+                    cursor.style.left = ((selectionx - x) * 24) + 'px';
+                    cursor.style.top = ((selectiony - y) * 24) + 'px';
+                    cursor.style.width = ((cursorx - (selectionx - x) +1) * 24 ) +'px';
+                    cursor.style.height = ((cursory - (selectiony - y) +1) * 24 ) +'px';
+
+                }
 		    } else {
                 x += dx * width / 2;
                 y += dy * height / 2;

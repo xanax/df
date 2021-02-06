@@ -66,11 +66,8 @@ public class AStarPathFinder implements PathFinder {
 	 */
 	@Override
 	public Path findPath(Mover mover, int sx, int sy, int tx, int ty) {
-		// easy first check, if the destination is blocked, we can't get there
-		if (map.blocked(mover, tx, ty)) {
-			return null;
-		}
-		
+
+
 		// initial state for A*. The closed group is empty. Only the starting
 		// tile is in the open list and it's cost is zero, i.e. we're already there
 		nodes[sx][sy].cost = 0;
@@ -115,7 +112,7 @@ public class AStarPathFinder implements PathFinder {
 					int xp = x + current.x;
 					int yp = y + current.y;
 					
-					if (isValidLocation(mover,sx,sy,xp,yp)) {
+					if (isValidLocation(mover,sx,sy,xp,yp, tx, ty)) {
 						// the cost to get to this node is cost the current plus the movement
 						// cost to reach this node. Note that the heursitic value is only used
 						// in the sorted open list
@@ -247,9 +244,13 @@ public class AStarPathFinder implements PathFinder {
 	 * @param y The y coordinate of the location to check
 	 * @return True if the location is valid for the given mover
 	 */
-	protected boolean isValidLocation(Mover mover, int sx, int sy, int x, int y) {
+	protected boolean isValidLocation(Mover mover, int sx, int sy, int x, int y, int tx, int
+	ty) {
 		boolean invalid = (x < 0) || (y < 0) || (x >= map.getWidthInTiles()) || (y >= map.getHeightInTiles());
-		
+
+		if(!invalid && x == tx && y == ty) {
+			return true;
+		}
 		if ((!invalid) && ((sx != x) || (sy != y))) {
 			invalid = map.blocked(mover, x, y);
 		}

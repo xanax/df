@@ -70,8 +70,10 @@ public class BlockMap extends Bounds implements TileBasedMap {
 
     @Override
     public boolean blocked(final Mover mover, final int x, final int y) {
-        int unit = ((UnitMover) mover).getType();
-        if(getBlock(new Point(x, y, 4)) == GRASS) { // TODO Z
+        // TODO Z
+        //int unit = ((UnitMover) mover).getType();
+        if(getBlock(new Point(x, y, 4)) == GRASS && getBlock(new Point(x, y, 5)) == 0
+                && getItem(new Point(x, y, 5)).isEmpty()) {
             return false;
         } else {
         return true;

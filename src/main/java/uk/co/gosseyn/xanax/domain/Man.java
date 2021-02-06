@@ -26,7 +26,7 @@ public class Man extends Creature implements HasBehaviour, Alliable, HasNeeds, C
     Point baseLocation = new Point();
     @Override
     public int getCode() {
-        return 1; // is this needed here?
+        return 6; // is this needed here?
     }
 
     @Override

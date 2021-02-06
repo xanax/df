@@ -21,30 +21,54 @@ import static uk.co.gosseyn.xanax.domain.BlockMap.TREE;
 public class MineTask extends Task {
     Bounds bounds; // TODO change to zone?
 
+    Set<Point> reserved = new HashSet<>();
+
     @Override
     public void perform(Game game) {
 
         for(TaskAssignment taskAssignment : getTaskAssignments()) {
             Moveable moveable = (Moveable) taskAssignment.getTaskAssignable();
+            if(bounds.contains(moveable.getLocation())
+                    && taskAssignment.getStatus() == MineTaskStatus.MOVING_TO_ZONE) {
+                moveable.setPath(null);
+            }
             if(!bounds.contains(moveable.getLocation())) {
                 // Not in zone, find route
                 taskAssignment.setStatus(MineTaskStatus.MOVING_TO_ZONE);
                 moveable.setPath(pathFinderService.findPath(game.getMap(), moveable.getLocation(), bounds.center()));
                 moveable.setPathStep(0);
-            } else if(taskAssignment.getStatus() == MineTaskStatus.MOVING_TO_ITEM) {
-                if(moveable.getPath().getLength() - 2 == moveable.getPathStep()) { // first is players current and last is target
-                    Path.Step nextStep = moveable.getPath().getStep(moveable.getPathStep()+1);
-                    Point nextPoint = new Point(nextStep.getX(), nextStep.getY(),
-                            moveable.getLocation().getZ());
-                    game.getChanges().add(new MineBlockChange(nextPoint));
-                    moveable.setPath(null);
-                }
-            } else {
+            } else if(moveable.getPath() != null
+                    && reserved.contains(moveable.getPath().getLastStep().getPoint().addz(moveable.getLocation().getZ()))
+                    && moveable.getPathStep() == moveable.getPath().getLength() - 2) {
+                mineBlock(game, taskAssignment, moveable);
+            } else if(moveable.getPath() == null){
                 taskAssignment.setStatus(MineTaskStatus.MOVING_TO_ITEM);
-                moveable.setPath(mapService.pathToNearestBlock(game.getMap(), moveable.getLocation(), TREE, bounds));
+                moveable.setPath(mapService.pathToNearestBlock(game.getMap(), moveable.getLocation(), TREE, bounds, reserved));
                 moveable.setPathStep(0);
+                if(moveable.getPath() != null) {
+                    Point point = moveable.getPath().getLastStep().getPoint().addz(moveable.getLocation().getZ());
+                    // TODO conflict resolution in another class
+                    if(!reserved.contains(point)) {
+                        reserved.add(point);
+                        if(moveable.getPath().getLength() == 2) {
+                            mineBlock(game, taskAssignment, moveable);
+                        }
+//                        game.getChanges().add(new ReserveBlockChange(this, point));
+                    } else {
+                        moveable.setPath(null);
+                    }
+                }
             }
         }
+    }
+
+    private void mineBlock(final Game game, final TaskAssignment taskAssignment, final Moveable moveable) {
+        Path.Step nextStep = moveable.getPath().getStep(moveable.getPathStep()+1);
+        Point nextPoint = new Point(nextStep.getX(), nextStep.getY(),
+                moveable.getLocation().getZ());
+        game.getChanges().add(new MineBlockChange(nextPoint));
+        taskAssignment.setStatus(null);
+        moveable.setPath(null);
     }
 
     public enum MineTaskStatus implements TaskStatus  {

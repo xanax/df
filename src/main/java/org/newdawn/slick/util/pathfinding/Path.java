@@ -1,5 +1,7 @@
 package org.newdawn.slick.util.pathfinding;
 
+import uk.co.gosseyn.xanax.domain.Point;
+
 import java.util.ArrayList;
 
 /**
@@ -28,7 +30,10 @@ public class Path {
 	public int getLength() {
 		return steps.size();
 	}
-	
+
+	public Step getLastStep() {
+		return getStep(steps.size() - 1);
+	}
 	/**
 	 * Get the step at a given index in the path
 	 * 
@@ -101,7 +106,10 @@ public class Path {
 		private int x;
 		/** The y coordinate at the given step */
 		private int y;
-		
+
+		public Point getPoint() {
+			return new Point(x, y, 0);
+		}
 		/**
 		 * Create a new step
 		 * 

@@ -9,5 +9,6 @@ import java.util.List;
 @Getter
 @Setter
 public class FrameData {
-    private List<Integer> map[][];
+    private int tiles[];
+    private int heights[];
 }
