@@ -91,3 +91,45 @@ class CollectWoodAction
 
 class TraversePathAction:
     List<Move
+
+=========================================================
+
+Creature
+
+GroupTask
+    Set<TaskAssignment>
+
+TaskAssignment
+    Creature
+    Set<CreatureTasks> todo
+    Set<CreatureTasks> complete
+
+
+WoodGroupTask
+    assign(creature):
+        create nnew taskassment
+        add movetoboundstask
+
+    do():
+        for each taskAssignment
+                if(todo not containns MoveToBoundsCreatureTask)
+                    assign creature moveToBoundsTask
+                else if
+MoveToBoundsCreatureTask
+    do(Bounds bounds):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+new brief
+Develop behaviours based on user
