@@ -16,6 +16,6 @@ public class PathFinderService {
     public Path findPath(BlockMap map, Point from, Point to) {
         AStarPathFinder finder = new AStarPathFinder(map, 500, true);
         return finder.findPath(new UnitMover(0),
-                from.getX(), from.getY(), to.getX(), to.getY());
+                from, to);
     }
 }

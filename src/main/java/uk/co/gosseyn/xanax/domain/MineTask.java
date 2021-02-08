@@ -41,17 +41,17 @@ public class MineTask extends Task {
                     taskAssignment.setStatus(MineTaskStatus.BLOCKED);
                 }
             }
-            if(status == MineTaskStatus.MOVING_TO_ZONE && bounds.contains(moveable.getLocation())) {
+            if(taskAssignment.getStatus() == MineTaskStatus.MOVING_TO_ZONE && bounds.contains(moveable.getLocation())) {
                 // Arrived at zone
                 moveable.setPath(null);
                 taskAssignment.setStatus(MOVING_TO_ITEM);
             }
-            if(status == MineTaskStatus.MOVING_TO_ITEM) {
+            if(taskAssignment.getStatus() == MineTaskStatus.MOVING_TO_ITEM) {
                 if(moveable.getPath() == null) {
                     moveable.setPath(mapService.pathToNearestBlock(game.getMap(), moveable.getLocation(), TREE, bounds, reserved));
                     moveable.setPathStep(0);
                     if(moveable.getPath() != null) {
-                        Point point = moveable.getPath().getLastStep().getPoint().addz(moveable.getLocation().getZ());
+                        Point point = moveable.getPath().getLastStep();
                         // TODO conflict resolution in another class
                         reserved.add(point);
                     } else {
@@ -66,7 +66,7 @@ public class MineTask extends Task {
     }
 
     private void mineBlock(final Game game, final Moveable moveable) {
-        Path.Step nextStep = moveable.getPath().getStep(moveable.getPathStep()+1);
+        Point nextStep = moveable.getPath().getStep(moveable.getPathStep()+1);
         Point nextPoint = new Point(nextStep.getX(), nextStep.getY(),
                 moveable.getLocation().getZ());
         game.getChanges().add(new MineBlockChange(nextPoint));

@@ -105,7 +105,7 @@ public class MainController {
         BlockMap map = game.getMap();
         if(item != null && item.getPath() != null && item.getPathStep() < item.getPath().getLength()) {
             item.setPathStep(item.getPathStep() + 1); // first one contains current
-            Path.Step step = item.getPath().getStep(item.getPathStep());
+            Point step = item.getPath().getStep(item.getPathStep());
                 map.removeItem(new Point(item.getLocation().getX(),
                         item.getLocation().getY(),
                         item.getLocation().getZ()),item);
@@ -162,7 +162,7 @@ public class MainController {
         item.setPathStep(0);
         item.setPath(
                 finder.findPath(new UnitMover(0),
-                        startx, starty, endx, endy));
+                        new Point(startx, starty, startz), new Point(endx, endy, endz)));
 
     }
 

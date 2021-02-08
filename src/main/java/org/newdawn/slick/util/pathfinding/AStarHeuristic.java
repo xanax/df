@@ -1,5 +1,7 @@
 package org.newdawn.slick.util.pathfinding;
 
+import uk.co.gosseyn.xanax.domain.Point;
+
 /**
  * The description of a class providing a cost for a given tile based
  * on a target location and entity being moved. This heuristic controls
@@ -14,14 +16,7 @@ public interface AStarHeuristic {
 	 * order in which tiles are searched while attempting to find a path to the 
 	 * target location. The lower the cost the more likely the tile will
 	 * be searched.
-	 * 
-	 * @param map The map on which the path is being found
-	 * @param mover The entity that is moving along the path
-	 * @param x The x coordinate of the tile being evaluated
-	 * @param y The y coordinate of the tile being evaluated
-	 * @param tx The x coordinate of the target location
-	 * @param ty Teh y coordinate of the target location
-	 * @return The cost associated with the given tile
+
 	 */
-	public float getCost(TileBasedMap map, Mover mover, int x, int y, int tx, int ty);
+	public float getCost(TileBasedMap map, Mover mover, Point source, Point target);
 }

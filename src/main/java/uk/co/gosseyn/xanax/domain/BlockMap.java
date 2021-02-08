@@ -59,21 +59,24 @@ public class BlockMap extends Bounds implements TileBasedMap {
     public int getHeightInTiles() {
         return size.getY();
     }
+    @Override
     public int getDepthInTiles() {
         return size.getZ();
     }
 
     @Override
-    public void pathFinderVisited(final int x, final int y) {
-        log.trace("Path finder visited x %d y %d", x ,y);
+    public void pathFinderVisited(Point point) {
+
     }
 
     @Override
-    public boolean blocked(final Mover mover, final int x, final int y) {
-        // TODO Z
+    public boolean blocked(final Mover mover, Point point) {
         //int unit = ((UnitMover) mover).getType();
-        if(getBlock(new Point(x, y, 4)) == GRASS && getBlock(new Point(x, y, 5)) == 0
-                && getItem(new Point(x, y, 5)).isEmpty()) {
+        if(point.getZ() != 5 ) {
+            return true;
+        }
+        if(getBlock(point.clone().addz(-1)) == GRASS && getBlock(point) == 0
+                && getItem(point).isEmpty()) {
             return false;
         } else {
         return true;
@@ -81,7 +84,7 @@ public class BlockMap extends Bounds implements TileBasedMap {
     }
 
     @Override
-    public float getCost(final Mover mover, final int sx, final int sy, final int tx, final int ty) {
+    public float getCost(final Mover mover, Point source, Point target) {
         return 1;
     }
 }

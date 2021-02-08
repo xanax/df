@@ -24,9 +24,8 @@ public class TraversePathCreatureTask extends CreatureTask {
         if (this.getPath() != null && this.getPathStep() < this.getPath().getLength()) {
             this.setPathStep(this.getPathStep() + 1); // first one contains current
             //TODO check if blocked
-            Path.Step step = this.getPath().getStep(this.getPathStep());
-            game.getChanges().add(new MoveBlockChange(creature, new Point(step.getX(), step.getY(),
-                    creature.location.getZ())));
+            Point step = this.getPath().getStep(this.getPathStep());
+            game.getChanges().add(new MoveBlockChange(creature, step));
         }
     }
 }
