@@ -72,14 +72,14 @@ public class BlockMap extends Bounds implements TileBasedMap {
     @Override
     public boolean blocked(final Mover mover, Point point) {
         //int unit = ((UnitMover) mover).getType();
-        if(point.getZ() != 5 ) {
+        Point below = point.clone().addz(-1);
+        if(getBlock(below) == 0 && getBlock(point) == 0) {
             return true;
-        }
-        if(getBlock(point.clone().addz(-1)) == GRASS && getBlock(point) == 0
+        } else if(getBlock(below) == GRASS && (getBlock(point) == GRASS || getBlock(point) == 0)
                 && getItem(point).isEmpty()) {
             return false;
         } else {
-        return true;
+            return true;
         }
     }
 

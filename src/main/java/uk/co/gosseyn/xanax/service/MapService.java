@@ -3,6 +3,7 @@ package uk.co.gosseyn.xanax.service;
 import org.newdawn.slick.util.pathfinding.Path;
 import org.springframework.stereotype.Service;
 import uk.co.gosseyn.xanax.domain.Bounds;
+import uk.co.gosseyn.xanax.domain.ForrestZone;
 import uk.co.gosseyn.xanax.domain.Locatable;
 import uk.co.gosseyn.xanax.domain.BlockMap;
 import uk.co.gosseyn.xanax.domain.Point;
@@ -11,8 +12,8 @@ import uk.co.gosseyn.xanax.repository.GameRepository;
 
 import javax.inject.Inject;
 
-import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static uk.co.gosseyn.xanax.domain.BlockMap.GRASS;
 import static uk.co.gosseyn.xanax.domain.BlockMap.ROCK;
@@ -20,6 +21,7 @@ import static uk.co.gosseyn.xanax.domain.BlockMap.ROCK;
 @Service
 public class MapService {
 
+    // TODO onnce a path is calculated save and any other path where both points are on it can reuse
     private GameRepository gameRepository;
     private PathFinderService pathFinderService;
 
@@ -79,7 +81,21 @@ public class MapService {
     //                              543
     //
 
-    public Path pathToNearestBlock(BlockMap map, final Point location, int block, final Bounds bounds, Set<Point> except) {
+    public Path pathToNearestBlock(BlockMap map, final Point location, int block, final ForrestZone zone, Set<Point> except) {
+
+        for(Point point : zone.treeRankedByDistance(location)) {
+            if (map.getBlock(point) == block && !except.contains(point)) {
+                Path path =pathFinderService.findPath(map, location, point);
+                if (path != null) {
+                    return path;
+                }
+            }
+        }
+        return null;
+    }
+
+    private Path pathToNearestBlockOld(BlockMap map, final Point location, int block, final Bounds bounds, Set<Point> except) {
+
         // TODO make 3d (search z-1 then z+1 then z-2 then z+2
         Point current = location.clone();
         int length = 0;

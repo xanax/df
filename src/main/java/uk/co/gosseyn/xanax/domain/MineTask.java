@@ -21,7 +21,7 @@ import static uk.co.gosseyn.xanax.domain.MineTask.MineTaskStatus.MOVING_TO_ZONE;
 @Data
 @FieldDefaults(makeFinal=true, level= AccessLevel.PRIVATE)
 public class MineTask extends Task {
-    Bounds bounds; // TODO change to zone?
+    ForrestZone bounds; // TODO change to zone?
 
     Set<Point> reserved = new HashSet<>();
 
@@ -33,7 +33,7 @@ public class MineTask extends Task {
             TaskStatus status = taskAssignment.getStatus();
             if(status == null) {
                 // Start up - find path to zone
-                moveable.setPath(pathFinderService.findPath(game.getMap(), moveable.getLocation(), bounds.center()));
+                moveable.setPath(pathFinderService.findPath(game.getMap(), moveable.getLocation(), bounds.getBounds().center()));
                 if(moveable.getPath() != null) {
                     moveable.setPathStep(0);
                     taskAssignment.setStatus(MOVING_TO_ZONE);
@@ -41,7 +41,7 @@ public class MineTask extends Task {
                     taskAssignment.setStatus(MineTaskStatus.BLOCKED);
                 }
             }
-            if(taskAssignment.getStatus() == MineTaskStatus.MOVING_TO_ZONE && bounds.contains(moveable.getLocation())) {
+            if(taskAssignment.getStatus() == MineTaskStatus.MOVING_TO_ZONE && bounds.getBounds().contains(moveable.getLocation())) {
                 // Arrived at zone
                 moveable.setPath(null);
                 taskAssignment.setStatus(MOVING_TO_ITEM);
@@ -68,7 +68,7 @@ public class MineTask extends Task {
     private void mineBlock(final Game game, final Moveable moveable) {
         Point nextStep = moveable.getPath().getStep(moveable.getPathStep()+1);
         Point nextPoint = new Point(nextStep.getX(), nextStep.getY(),
-                moveable.getLocation().getZ());
+                nextStep.getZ());
         game.getChanges().add(new MineBlockChange(nextPoint));
         moveable.setPath(null);
     }

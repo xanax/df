@@ -132,6 +132,8 @@ public class MainController {
         mapService.placeBlock(map, new Vector2d(11, 50), TREE);
         mapService.placeBlock(map, new Vector2d(19, 51), TREE);
         mapService.placeBlock(map, new Vector2d(6, 55), TREE);
+        mapService.placeBlock(map, new Vector2d(14, 57), TREE);
+        mapService.placeBlock(map, new Vector2d(4, 51), TREE);
 
         Game game = gameService.newGame(map);
         game.getActiveItems().add(man);
@@ -176,13 +178,12 @@ public class MainController {
         BlockMap map = gameService.getGame(gameId).getMap();
         Player player = playerService.getPlayer(playerId);
 
-        ForrestZone zone = new ForrestZone();
         //zone.setLocation(location);
         //zone.setExtent(extent);
         //player.getSocialGroups().iterator().next().getZones().add(zone);
         Point min = new Point(startx, starty, startz);
         Point max = new Point(endx, endy, endz);
-        MineTask mineTask = new MineTask(new Bounds(min, max));
+        MineTask mineTask = new MineTask(new ForrestZone(map,new Bounds(min, max)));
 
         player.getSocialGroups().iterator().next().getTasks().add(mineTask);
 
