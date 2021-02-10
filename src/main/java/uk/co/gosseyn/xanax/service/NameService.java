@@ -30,8 +30,8 @@ public class NameService {
             engine.eval(reader);
             Invocable invocable = (Invocable) engine;
 
-            return invocable.invokeFunction("generate", (int)(Math.random() * 10) + 2).toString()
-                    +" "+invocable.invokeFunction("generate", (int)(Math.random() * 10) + 2).toString();
+            return invocable.invokeFunction("generate", (int)(Math.random() * 4) + 2).toString()
+                    +" "+invocable.invokeFunction("generate", (int)(Math.random() * 4) + 2).toString();
         } catch (ScriptException | NoSuchMethodException | IOException e) {
             throw new RuntimeException("Unable to generate name.", e);
         }

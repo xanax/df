@@ -1,7 +1,6 @@
 package uk.co.gosseyn.xanax.view.web;
 
 import org.newdawn.slick.util.pathfinding.AStarPathFinder;
-import org.newdawn.slick.util.pathfinding.Path;
 import org.newdawn.slick.util.pathfinding.PathFinder;
 import org.newdawn.slick.util.pathfinding.example.UnitMover;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,11 +9,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import uk.co.gosseyn.xanax.domain.Bounds;
 import uk.co.gosseyn.xanax.domain.CanJoinSocialGroup;
-import uk.co.gosseyn.xanax.domain.ForrestZone;
+import uk.co.gosseyn.xanax.domain.ForestTask;
+import uk.co.gosseyn.xanax.domain.ForestZone;
 import uk.co.gosseyn.xanax.domain.Game;
 import uk.co.gosseyn.xanax.domain.BlockMap;
 import uk.co.gosseyn.xanax.domain.Man;
-import uk.co.gosseyn.xanax.domain.MineTask;
 import uk.co.gosseyn.xanax.domain.Moveable;
 import uk.co.gosseyn.xanax.domain.Player;
 import uk.co.gosseyn.xanax.domain.Point;
@@ -30,10 +29,7 @@ import uk.co.gosseyn.xanax.service.PlayerService;
 
 import javax.inject.Inject;
 import java.util.Collection;
-import java.util.List;
-import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
@@ -183,9 +179,9 @@ public class MainController {
         //player.getSocialGroups().iterator().next().getZones().add(zone);
         Point min = new Point(startx, starty, startz);
         Point max = new Point(endx, endy, endz);
-        MineTask mineTask = new MineTask(new ForrestZone(map,new Bounds(min, max)));
+        ForestTask forestTask = new ForestTask(new ForestZone(map,new Bounds(min, max)));
 
-        player.getSocialGroups().iterator().next().getTasks().add(mineTask);
+        player.getSocialGroups().iterator().next().getTasks().add(forestTask);
 
     }
 }

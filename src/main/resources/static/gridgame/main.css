@@ -52,3 +52,12 @@ body{
 	border-width: 1;
 	border-color: white;
 }
+
+.name {
+    position: absolute;
+    width: auto;
+    height: auto;
+    z-index: 1;
+    font-size: small;
+    color: white;
+}

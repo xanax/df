@@ -4,9 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.co.gosseyn.xanax.domain.Game;
 import uk.co.gosseyn.xanax.domain.BlockMap;
+import uk.co.gosseyn.xanax.domain.Locatable;
+import uk.co.gosseyn.xanax.domain.Nameable;
 import uk.co.gosseyn.xanax.domain.Point;
 import uk.co.gosseyn.xanax.service.GameService;
 
+import javax.naming.Name;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,6 +51,14 @@ public class GameFacade {
                     frameData.getTiles()[screenTileIndex] = map.getBlock(new Point(x, y, zTileOffset));
                 } else if(!map.getItem(point).isEmpty()) {
                     frameData.getTiles()[screenTileIndex] = map.getItem(point).iterator().next().getCode();
+                    Locatable locatable = map.getItem(point).iterator().next();
+                    if(locatable instanceof Nameable) {
+                        BlockData blockData = new BlockData();
+                        Nameable nameable = (Nameable)locatable;
+                        blockData.setName(nameable.getName());
+                        frameData.getBlockData().put((point.getX() - xTileOffset)+"-"+(point.getY() - yTileOffset)+"-"+point.getZ(),
+                            blockData);
+                    }
                 } else {
                     frameData.getTiles()[screenTileIndex] = map.getBlock(point);
                 }

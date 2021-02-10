@@ -4,24 +4,19 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.newdawn.slick.util.pathfinding.Path;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 import static uk.co.gosseyn.xanax.domain.BlockMap.TREE;
-import static uk.co.gosseyn.xanax.domain.MineTask.MineTaskStatus.MOVING_TO_ITEM;
-import static uk.co.gosseyn.xanax.domain.MineTask.MineTaskStatus.MOVING_TO_ZONE;
+import static uk.co.gosseyn.xanax.domain.ForestTask.MineTaskStatus.MOVING_TO_ITEM;
+import static uk.co.gosseyn.xanax.domain.ForestTask.MineTaskStatus.MOVING_TO_ZONE;
 
 @Slf4j
 @Data
 @FieldDefaults(makeFinal=true, level= AccessLevel.PRIVATE)
-public class MineTask extends Task {
-    ForrestZone bounds; // TODO change to zone?
+public class ForestTask extends Task {
+    ForestZone zone;
 
     Set<Point> reserved = new HashSet<>();
 
@@ -33,7 +28,7 @@ public class MineTask extends Task {
             TaskStatus status = taskAssignment.getStatus();
             if(status == null) {
                 // Start up - find path to zone
-                moveable.setPath(pathFinderService.findPath(game.getMap(), moveable.getLocation(), bounds.getBounds().center()));
+                moveable.setPath(pathFinderService.findPath(game.getMap(), moveable.getLocation(), zone.getBounds().center()));
                 if(moveable.getPath() != null) {
                     moveable.setPathStep(0);
                     taskAssignment.setStatus(MOVING_TO_ZONE);
@@ -41,14 +36,14 @@ public class MineTask extends Task {
                     taskAssignment.setStatus(MineTaskStatus.BLOCKED);
                 }
             }
-            if(taskAssignment.getStatus() == MineTaskStatus.MOVING_TO_ZONE && bounds.getBounds().contains(moveable.getLocation())) {
+            if(taskAssignment.getStatus() == MineTaskStatus.MOVING_TO_ZONE && zone.getBounds().contains(moveable.getLocation())) {
                 // Arrived at zone
                 moveable.setPath(null);
                 taskAssignment.setStatus(MOVING_TO_ITEM);
             }
             if(taskAssignment.getStatus() == MineTaskStatus.MOVING_TO_ITEM) {
                 if(moveable.getPath() == null) {
-                    moveable.setPath(mapService.pathToNearestBlock(game.getMap(), moveable.getLocation(), TREE, bounds, reserved));
+                    moveable.setPath(mapService.pathToNearestBlock(game.getMap(), moveable.getLocation(), TREE, zone, reserved));
                     moveable.setPathStep(0);
                     if(moveable.getPath() != null) {
                         Point point = moveable.getPath().getLastStep();

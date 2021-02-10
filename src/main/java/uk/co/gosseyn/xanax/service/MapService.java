@@ -3,7 +3,7 @@ package uk.co.gosseyn.xanax.service;
 import org.newdawn.slick.util.pathfinding.Path;
 import org.springframework.stereotype.Service;
 import uk.co.gosseyn.xanax.domain.Bounds;
-import uk.co.gosseyn.xanax.domain.ForrestZone;
+import uk.co.gosseyn.xanax.domain.ForestZone;
 import uk.co.gosseyn.xanax.domain.Locatable;
 import uk.co.gosseyn.xanax.domain.BlockMap;
 import uk.co.gosseyn.xanax.domain.Point;
@@ -13,7 +13,6 @@ import uk.co.gosseyn.xanax.repository.GameRepository;
 import javax.inject.Inject;
 
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicReference;
 
 import static uk.co.gosseyn.xanax.domain.BlockMap.GRASS;
 import static uk.co.gosseyn.xanax.domain.BlockMap.ROCK;
@@ -81,7 +80,7 @@ public class MapService {
     //                              543
     //
 
-    public Path pathToNearestBlock(BlockMap map, final Point location, int block, final ForrestZone zone, Set<Point> except) {
+    public Path pathToNearestBlock(BlockMap map, final Point location, int block, final ForestZone zone, Set<Point> except) {
 
         for(Point point : zone.treeRankedByDistance(location)) {
             if (map.getBlock(point) == block && !except.contains(point)) {

@@ -25,13 +25,12 @@ import static uk.co.gosseyn.xanax.domain.BlockMap.TREE;
 @Getter
 @Setter
 @FieldDefaults(makeFinal=true, level= AccessLevel.PRIVATE)
-public class ForrestZone extends Zone {
+public class ForestZone extends Zone {
     BlockMap map;
     Bounds bounds;
     Set<Point> treeLocations = new HashSet<>();
-    ClosestHeuristic closestHeuristic = new ClosestHeuristic();
 
-    public ForrestZone(BlockMap map, Bounds bounds) {
+    public ForestZone(BlockMap map, Bounds bounds) {
         this.map = map;
         this.bounds = bounds;
         this.scan();

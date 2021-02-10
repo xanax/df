@@ -79,6 +79,13 @@ function refresh() {
           var allData = JSON.parse(data);
           var tiles = allData.tiles;
           var heights = allData.heights;
+          var blockData = allData.blockData;
+
+var elements = document.getElementsByClassName('name');
+while(elements.length > 0){
+    elements[0].classList.remove('name');
+}
+
             for(var y = 0; y < height; y++) {
                 for(var x = 0; x < width; x++) {
                 var id = x + y * width;
@@ -91,6 +98,7 @@ function refresh() {
                     opacity = "0.25";
                 }
 
+
                 if(heights[id] <= z && heights[id] >= z - 2) {
                     if(tiles[id] == '2') {
                         card.innerHTML = '<image src="path-tile.png" style="opacity: '+opacity+';"></image>';
@@ -102,6 +110,16 @@ function refresh() {
                         card.innerHTML = '<image src="beech.png" style="opacity: '+opacity+';"></image>';
                     } else {
                     }
+        if(blockData[x+'-'+y+'-'+z]) {
+                var id = 'name'+(x + '-'+ y +'-'+ z);
+                var name = document.createElement("div");
+                addClass(name, 'name');
+                name.id = id;
+                card.appendChild(name);
+               //name.style.left = (x * 24) + 'px';
+               //name.style.top = (y * 24) + 'px';
+               name.innerHTML = blockData[x+'-'+y+'-'+z].name;
+            }
               } else if(heights[id] < z - 2) {
                 card.innerHTML = '<image src="black.png" style="opacity: 0.2;"></image>';
               } else {

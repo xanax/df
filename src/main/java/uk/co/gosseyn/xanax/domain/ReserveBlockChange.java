@@ -1,14 +1,12 @@
 package uk.co.gosseyn.xanax.domain;
 
-import org.newdawn.slick.util.pathfinding.Path;
-
 public class ReserveBlockChange extends Change {
-    MineTask task;
+    ForestTask task;
     Point point;
-    public ReserveBlockChange( final MineTask mineTask, final Point point) {
+    public ReserveBlockChange(final ForestTask forestTask, final Point point) {
         super();
         this.point = point;
-        this.task = mineTask;
+        this.task = forestTask;
     }
 
     @Override
