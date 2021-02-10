@@ -24,33 +24,33 @@ public class ForestTask extends Task {
     public void perform(Game game) {
 
         for(TaskAssignment taskAssignment : getTaskAssignments()) {
-            Moveable moveable = (Moveable) taskAssignment.getTaskAssignable();
+            MovingObject MovingObject = (MovingObject) taskAssignment.getTaskAssignable();
             TaskStatus status = taskAssignment.getStatus();
             if(status == null) {
-                if(moveable.getPath() == null) {
-                    moveable.setPath(mapService.pathToNearestBlock(game.getMap(), moveable.getLocation(), TREE, zone, reserved));
-                    moveable.setPathStep(0);
-                    if(moveable.getPath() != null) {
-                        Point point = moveable.getPath().getLastStep();
+                if(MovingObject.getPath() == null) {
+                    MovingObject.setPath(mapService.pathToNearestBlock(game.getMap(), MovingObject.getLocation(), TREE, zone, reserved));
+                    MovingObject.setPathStep(0);
+                    if(MovingObject.getPath() != null) {
+                        Point point = MovingObject.getPath().getLastStep();
                         // TODO conflict resolution in another class
                         reserved.add(point);
                     } else {
                         taskAssignment.setStatus(MineTaskStatus.BLOCKED);
                     }
                 }
-                if(moveable.getPath() != null && moveable.getPathStep() == moveable.getPath().getLength() - 2) {
-                    mineBlock(game, moveable);
+                if(MovingObject.getPath() != null && MovingObject.getPathStep() == MovingObject.getPath().getLength() - 2) {
+                    mineBlock(game, MovingObject);
                 }
             }
         }
     }
 
-    private void mineBlock(final Game game, final Moveable moveable) {
-        Point nextStep = moveable.getPath().getStep(moveable.getPathStep()+1);
+    private void mineBlock(final Game game, final MovingObject MovingObject) {
+        Point nextStep = MovingObject.getPath().getStep(MovingObject.getPathStep()+1);
         Point nextPoint = new Point(nextStep.getX(), nextStep.getY(),
                 nextStep.getZ());
         game.getChanges().add(new MineBlockChange(nextPoint));
-        moveable.setPath(null);
+        MovingObject.setPath(null);
     }
 
     public enum MineTaskStatus implements TaskStatus  {

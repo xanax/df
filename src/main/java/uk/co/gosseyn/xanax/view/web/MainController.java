@@ -14,7 +14,7 @@ import uk.co.gosseyn.xanax.domain.ForestZone;
 import uk.co.gosseyn.xanax.domain.Game;
 import uk.co.gosseyn.xanax.domain.BlockMap;
 import uk.co.gosseyn.xanax.domain.Man;
-import uk.co.gosseyn.xanax.domain.Moveable;
+import uk.co.gosseyn.xanax.domain.MovingObject;
 import uk.co.gosseyn.xanax.domain.Player;
 import uk.co.gosseyn.xanax.domain.Point;
 import uk.co.gosseyn.xanax.domain.SocialGroup;
@@ -54,7 +54,7 @@ public class MainController {
 
     private PathFinder finder;
 
-    private Moveable item;
+    private MovingObject item;
 
     //TODO this will be passed from client
     private UUID playerId;
@@ -156,7 +156,7 @@ public class MainController {
                          @RequestParam int endz) {
         BlockMap map = gameService.getGame(gameId).getMap();
         finder = new AStarPathFinder(map, 500, true);
-        item = (Moveable) map.getItem(new Point(startx, starty, startz)).iterator().next();
+        item = (MovingObject) map.getItem(new Point(startx, starty, startz)).iterator().next();
         item.setPathStep(0);
         item.setPath(
                 finder.findPath(new UnitMover(0),

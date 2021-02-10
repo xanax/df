@@ -9,7 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal=true, level= AccessLevel.PRIVATE)
 public class MoveBlockChange extends Change {
-    Moveable moveable;
+    MovingObject moveable;
     Point to;
 
     @Override

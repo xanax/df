@@ -16,13 +16,10 @@ import java.util.Set;
 @Setter
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal=true, level= AccessLevel.PRIVATE)
-public abstract class Creature extends GameObject implements Moveable, TaskAssignable  {
+public abstract class Creature extends MovingObject implements TaskAssignable  {
     @NonFinal
     protected Point location;
     @NonFinal
-    Path path;
-    @NonFinal
-    int pathStep;
     Set<TaskAssignment> taskAssignments = new HashSet<>();
     @NonFinal
     CreatureTask currentTask;
