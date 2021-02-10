@@ -27,21 +27,6 @@ public class ForestTask extends Task {
             Moveable moveable = (Moveable) taskAssignment.getTaskAssignable();
             TaskStatus status = taskAssignment.getStatus();
             if(status == null) {
-                // Start up - find path to zone
-                moveable.setPath(pathFinderService.findPath(game.getMap(), moveable.getLocation(), zone.getBounds().center()));
-                if(moveable.getPath() != null) {
-                    moveable.setPathStep(0);
-                    taskAssignment.setStatus(MOVING_TO_ZONE);
-                } else {
-                    taskAssignment.setStatus(MineTaskStatus.BLOCKED);
-                }
-            }
-            if(taskAssignment.getStatus() == MineTaskStatus.MOVING_TO_ZONE && zone.getBounds().contains(moveable.getLocation())) {
-                // Arrived at zone
-                moveable.setPath(null);
-                taskAssignment.setStatus(MOVING_TO_ITEM);
-            }
-            if(taskAssignment.getStatus() == MineTaskStatus.MOVING_TO_ITEM) {
                 if(moveable.getPath() == null) {
                     moveable.setPath(mapService.pathToNearestBlock(game.getMap(), moveable.getLocation(), TREE, zone, reserved));
                     moveable.setPathStep(0);
