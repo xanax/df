@@ -9,8 +9,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static uk.co.gosseyn.xanax.domain.BlockMap.TREE;
-import static uk.co.gosseyn.xanax.domain.ForestTask.MineTaskStatus.MOVING_TO_ITEM;
-import static uk.co.gosseyn.xanax.domain.ForestTask.MineTaskStatus.MOVING_TO_ZONE;
 
 @Slf4j
 @Data
@@ -29,7 +27,6 @@ public class ForestTask extends Task {
             if(status == null) {
                 if(MovingObject.getPath() == null) {
                     MovingObject.setPath(mapService.pathToNearestBlock(game.getMap(), MovingObject.getLocation(), TREE, zone, reserved));
-                    MovingObject.setPathStep(0);
                     if(MovingObject.getPath() != null) {
                         Point point = MovingObject.getPath().getLastStep();
                         // TODO conflict resolution in another class

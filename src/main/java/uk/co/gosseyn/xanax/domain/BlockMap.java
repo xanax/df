@@ -10,10 +10,19 @@ import java.util.Set;
 @Slf4j
 public class BlockMap extends Bounds implements TileBasedMap {
 
-    public static int ROCK = 1;
-    public static int GRASS = 2;
-    public static int WATER = 3;
-    public static int TREE = 4;
+    final static BlockAttributes[] BLOCK_ATTRIBUTES = new BlockAttributes[] {
+            new BlockAttributes("Empty", false),
+            new BlockAttributes("Rock", false),
+            new BlockAttributes("Grass", true),
+            new BlockAttributes("Water", false),
+            new BlockAttributes("Tree", false)
+    };
+
+    public static final int EMPTY = 0;
+    public static final int ROCK = 1;
+    public static final int GRASS = 2;
+    public static final int WATER = 3;
+    public static final int TREE = 4;
 
     private Point size;
 
@@ -34,8 +43,11 @@ public class BlockMap extends Bounds implements TileBasedMap {
 
     }
 
-    public int getBlock(Point location) {
+    public int getBlockNumber(Point location) {
         return map[(location.getZ() * size.getX() * size.getY()) + (location.getY() * size.getX()) + location.getX()];
+    }
+    public BlockAttributes getBlock(Point location) {
+        return BLOCK_ATTRIBUTES[map[(location.getZ() * size.getX() * size.getY()) + (location.getY() * size.getX()) + location.getX()]];
     }
     public void setBlock(Point location, int block) {
         map[(location.getZ() * size.getX() * size.getY()) + (location.getY() * size.getX()) + location.getX()] = block;
@@ -72,14 +84,11 @@ public class BlockMap extends Bounds implements TileBasedMap {
     @Override
     public boolean blocked(final Mover mover, Point point) {
         //int unit = ((UnitMover) mover).getType();
-        Point below = point.clone().addz(-1);
-        if(getBlock(below) == 0 && getBlock(point) == 0) {
+        //Point below = point.clone().addz(-1);
+        if(!getBlock(point).isFloor()) {
             return true;
-        } else if(getBlock(below) == GRASS && (getBlock(point) == GRASS || getBlock(point) == 0)
-                && getItem(point).isEmpty()) {
-            return false;
         } else {
-            return true;
+            return false;
         }
     }
 

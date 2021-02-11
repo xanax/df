@@ -14,6 +14,7 @@ import javax.inject.Inject;
 
 import java.util.Set;
 
+import static uk.co.gosseyn.xanax.domain.BlockMap.EMPTY;
 import static uk.co.gosseyn.xanax.domain.BlockMap.GRASS;
 import static uk.co.gosseyn.xanax.domain.BlockMap.ROCK;
 
@@ -60,19 +61,19 @@ public class MapService {
 
     public void placeItem(BlockMap map, Vector2d location, Locatable item) {
         Point l = new Point(location.getX(), location.getY(), 0);
-        while (map.getBlock(l) != 0) {
+        while (map.getBlockNumber(l) != EMPTY) {
             l.addz(1);
         }
-        item.setLocation(l);
+        item.setLocation(l.addz(-1));
         map.addItem(l, item);
     }
 
     public void placeBlock(BlockMap map, Vector2d location, int block) {
         Point l = new Point(location.getX(), location.getY(), 0);
-        while (map.getBlock(l) != 0) {
+        while (map.getBlockNumber(l) != EMPTY) {
             l.addz(1);
         }
-        map.setBlock(l, block);
+        map.setBlock(l.addz(-1), block);
     }
     //  Moves in na circular ie        10
     //                              781
@@ -83,7 +84,7 @@ public class MapService {
     public Path pathToNearestBlock(BlockMap map, final Point location, int block, final ForestZone zone, Set<Point> except) {
 
         for(Point point : zone.treeRankedByDistance(location)) {
-            if (map.getBlock(point) == block && !except.contains(point)) {
+            if (map.getBlockNumber(point) == block && !except.contains(point)) {
                 Path path =pathFinderService.findPath(map, location, point);
                 if (path != null) {
                     return path;
@@ -114,7 +115,7 @@ public class MapService {
                     // If within bounds and is block and the path isn't blocked, return path
                     if (bounds.contains(current)) {
                         withinBounds = true;
-                        if (map.getBlock(current) == block && !except.contains(current)) {
+                        if (map.getBlockNumber(current) == block && !except.contains(current)) {
                             Path path = pathFinderService.findPath(map, location, current);
                             if (path != null) {
                                 return path;

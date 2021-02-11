@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import static uk.co.gosseyn.xanax.domain.BlockMap.GRASS;
 
+
 @Slf4j
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal=true, level= AccessLevel.PRIVATE)

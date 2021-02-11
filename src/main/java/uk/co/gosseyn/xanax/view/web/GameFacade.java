@@ -44,11 +44,11 @@ public class GameFacade {
                 int screenTileY = y - yTileOffset;
                 int screenTileIndex = screenTileY * screenWidthInTiles + screenTileX;
                 Point point = new Point(x, y, zTileOffset);
-                while(map.getBlock(point) == 0 && map.getItem(point).isEmpty() && point.getZ() > 0) {
+                while(map.getBlockNumber(point) == BlockMap.EMPTY && map.getItem(point).isEmpty() && point.getZ() > 0) {
                     point.addz(-1);
                 }
                 if(point.getZ() == 0) {
-                    frameData.getTiles()[screenTileIndex] = map.getBlock(new Point(x, y, zTileOffset));
+                    frameData.getTiles()[screenTileIndex] = map.getBlockNumber(new Point(x, y, zTileOffset));
                 } else if(!map.getItem(point).isEmpty()) {
                     frameData.getTiles()[screenTileIndex] = map.getItem(point).iterator().next().getCode();
                     Locatable locatable = map.getItem(point).iterator().next();
@@ -60,7 +60,7 @@ public class GameFacade {
                             blockData);
                     }
                 } else {
-                    frameData.getTiles()[screenTileIndex] = map.getBlock(point);
+                    frameData.getTiles()[screenTileIndex] = map.getBlockNumber(point);
                 }
                 frameData.getHeights()[screenTileIndex] = point.getZ();
             }

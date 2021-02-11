@@ -56,7 +56,7 @@ public class ForestZone extends Zone {
             for(int y = bounds.getMin().getY(); y <= bounds.getMax().getY(); y++) {
                 for (int x = bounds.getMin().getX(); x <= bounds.getMax().getX(); x++) {
                     Point point = new Point(x, y, z);
-                     if(map.getBlock(point)==TREE) {
+                     if(map.getBlockNumber(point)==TREE) {
                         treeLocations.add(point);
                     }
                 }
