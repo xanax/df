@@ -75,11 +75,7 @@ public class MapService {
         }
         map.setBlock(l.addz(-1), block);
     }
-    //  Moves in na circular ie        10
-    //                              781
-    //                              6x2
-    //                              543
-    //
+
 
     public Path pathToNearestBlock(BlockMap map, final Point location, int block, final ForestZone zone, Set<Point> except) {
 
@@ -94,6 +90,11 @@ public class MapService {
         return null;
     }
 
+    //  Moves in na circular ie        10
+    //                              781
+    //                              6x2
+    //                              543
+    //
     private Path pathToNearestBlockOld(BlockMap map, final Point location, int block, final Bounds bounds, Set<Point> except) {
 
         // TODO make 3d (search z-1 then z+1 then z-2 then z+2

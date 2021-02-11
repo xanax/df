@@ -36,18 +36,12 @@ public class ForestTask extends Task {
                     }
                 }
                 if(MovingObject.getPath() != null && MovingObject.getPathStep() == MovingObject.getPath().getLength() - 2) {
-                    mineBlock(game, MovingObject);
+                    Point nextStep = MovingObject.getPath().getStep(MovingObject.getPathStep()+1);
+                    game.getChanges().add(new MineBlockChange(nextStep));
+                    MovingObject.setPath(null);
                 }
             }
         }
-    }
-
-    private void mineBlock(final Game game, final MovingObject MovingObject) {
-        Point nextStep = MovingObject.getPath().getStep(MovingObject.getPathStep()+1);
-        Point nextPoint = new Point(nextStep.getX(), nextStep.getY(),
-                nextStep.getZ());
-        game.getChanges().add(new MineBlockChange(nextPoint));
-        MovingObject.setPath(null);
     }
 
     public enum MineTaskStatus implements TaskStatus  {
