@@ -3,7 +3,9 @@ package org.newdawn.slick.util.pathfinding;
 import uk.co.gosseyn.xanax.domain.Point;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Path {
 	private List<Point> steps = new ArrayList<>();
@@ -41,5 +43,8 @@ public class Path {
 
 	public boolean contains(Point point) {
 		return steps.contains(point);
+	}
+	public void reverse() {
+		Collections.reverse(steps);
 	}
 }

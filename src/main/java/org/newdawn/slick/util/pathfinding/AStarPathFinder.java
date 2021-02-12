@@ -1,5 +1,6 @@
 package org.newdawn.slick.util.pathfinding;
 
+import lombok.extern.slf4j.Slf4j;
 import uk.co.gosseyn.xanax.domain.Point;
 
 import java.util.AbstractList;
@@ -13,6 +14,7 @@ import java.util.List;
  * 
  * @author Kevin Glass
  */
+@Slf4j
 public class AStarPathFinder implements PathFinder {
 	/** The set of nodes that have been searched through */
 	private List<Node> closed = new ArrayList<>();
@@ -122,6 +124,7 @@ public class AStarPathFinder implements PathFinder {
 							// in the sorted open list
 							float nextStepCost = current.cost + getMovementCost(mover, current.point, np);
 							Node neighbour = nodes[np.getX()][np.getY()][np.getZ()];
+
 							map.pathFinderVisited(np);
 
 							// if the new cost we've determined for this node is lower than
@@ -151,7 +154,9 @@ public class AStarPathFinder implements PathFinder {
 				}
 			}
 		}
-
+		if(maxDepth>=maxSearchDistance) {
+			log.trace("Reached max search distance {}", maxDepth);
+		}
 		// since we've got an empty open list or we've run out of search 
 		// there was no path. Just return null
 		if (nodes[target.getX()][target.getY()][target.getZ()].parent == null) {

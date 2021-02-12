@@ -138,8 +138,7 @@ public class MainController {
         Player player = playerService.newPlayer();
         game.getSocialGroups().addAll(player.getSocialGroups());
         player.setGame(game);
-        player.getSocialGroups().iterator().next().getMembers().addAll(asList(man, man2));
-        game.getTaskDoers().addAll(asList(man, man2));
+        player.getSocialGroups().iterator().next().getMembers().addAll(asList(man));
         playerService.savePlayer(player);
         playerId = player.getPlayerId();
         game.getPlayers().add(player);

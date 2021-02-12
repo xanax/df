@@ -30,7 +30,6 @@ public class Game {
     List<Action> actionLog = new ArrayList<>();
     ArrayList<Player> players = new ArrayList<>();
     Collection<SocialGroup> socialGroups = new ArrayList<>();
-    Collection<TaskAssignable> taskDoers = new ArrayList<>();
 
 
     private List<Task> tasks = new ArrayList<>();

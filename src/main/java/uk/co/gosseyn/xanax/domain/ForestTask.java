@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.HashSet;
 import java.util.Set;
 
+import static uk.co.gosseyn.xanax.domain.BlockMap.ROCK;
 import static uk.co.gosseyn.xanax.domain.BlockMap.TREE;
 
 @Slf4j
@@ -26,7 +27,7 @@ public class ForestTask extends Task {
             TaskStatus status = taskAssignment.getStatus();
             if(status == null) {
                 if(MovingObject.getPath() == null) {
-                    MovingObject.setPath(mapService.pathToNearestBlock(game.getMap(), MovingObject.getLocation(), TREE, zone, reserved));
+                    MovingObject.setPath(mapService.pathToNearestBlock(game.getMap(), MovingObject.getLocation(), ROCK, zone, reserved));
                     if(MovingObject.getPath() != null) {
                         Point point = MovingObject.getPath().getLastStep();
                         // TODO conflict resolution in another class

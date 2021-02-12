@@ -1,5 +1,6 @@
 package uk.co.gosseyn.xanax.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.newdawn.slick.util.pathfinding.Path;
 import org.springframework.stereotype.Service;
 import uk.co.gosseyn.xanax.domain.Bounds;
@@ -18,6 +19,7 @@ import static uk.co.gosseyn.xanax.domain.BlockMap.EMPTY;
 import static uk.co.gosseyn.xanax.domain.BlockMap.GRASS;
 import static uk.co.gosseyn.xanax.domain.BlockMap.ROCK;
 
+@Slf4j
 @Service
 public class MapService {
 
@@ -78,16 +80,19 @@ public class MapService {
 
 
     public Path pathToNearestBlock(BlockMap map, final Point location, int block, final ForestZone zone, Set<Point> except) {
-
+        Long time = System.nanoTime();
+        Path path = null;
         for(Point point : zone.treeRankedByDistance(location)) {
             if (map.getBlockNumber(point) == block && !except.contains(point)) {
-                Path path =pathFinderService.findPath(map, location, point);
+                    path =pathFinderService.findPath(map, point, location);
                 if (path != null) {
-                    return path;
+                    path.reverse();
+                    break;
                 }
             }
         }
-        return null;
+        log.trace("Time to find route to nearest block: {}", ((System.nanoTime()-time)/1000000));
+        return path;
     }
 
     //  Moves in na circular ie        10
