@@ -118,7 +118,7 @@ public class AStarPathFinder implements PathFinder {
 						Point np = new Point(x+ current.point.getX(), y+ current.point.getY(),
 								z + current.point.getZ());
 
-						if (isValidLocation(mover, source, np, target)) {
+						if (isValidLocation(mover, source, np, target, current.point)) {
 							// the cost to get to this node is cost the current plus the movement
 							// cost to reach this node. Note that the heursitic value is only used
 							// in the sorted open list
@@ -248,12 +248,13 @@ public class AStarPathFinder implements PathFinder {
 	 * Check if a given location is valid for the supplied mover
 	 *
 	 */
-	protected boolean isValidLocation(Mover mover, Point source, Point neighbour, Point target) {
+	protected boolean isValidLocation(Mover mover, Point source, Point neighbour, Point target, Point current) {
 		boolean invalid = (neighbour.getX() < 0) || (neighbour.getY() < 0) ||(neighbour.getZ() < 0) ||
 				(neighbour.getX() >= map.getWidthInTiles()) || (neighbour.getY() >= map.getHeightInTiles()
 				|| (neighbour.getZ() >= map.getDepthInTiles()));
 
-		if(!invalid && neighbour.equals(target)) {
+		if(!invalid && neighbour.equals(target)
+				&& current.getZ() == neighbour.getZ()) {
 			return true;
 		}
 		if ((!invalid) && !source.equals(neighbour)) {

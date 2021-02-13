@@ -85,6 +85,7 @@ public class BlockMap extends Bounds implements TileBasedMap {
     public boolean blocked(final Mover mover, Point point) {
         //int unit = ((UnitMover) mover).getType();
         //Point below = point.clone().addz(-1);
+        //TODO if before target enforce being on same Z
         if(!getBlock(point).isFloor()) {
             return true;
         } else {

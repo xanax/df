@@ -61,3 +61,14 @@ body{
     font-size: small;
     color: white;
 }
+
+table td {
+    border: 1px solid #999;
+    width: 80px;
+    height: 40px;
+    margin: 10px;
+}
+
+td.selected {
+    background-color: green;
+}

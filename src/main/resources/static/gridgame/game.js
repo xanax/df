@@ -42,7 +42,7 @@ function init() {
     //refresh();
       gameInfo.innerHTML = 'x-offset '+x+' y-offsey '+ y +' z '+z+'<br>'+
       'x-selection '+selectionx+' y-selection '+selectiony+' z-selection '+selectionz+'<br>'+
-      code+' time: '+new Date();
+      code+' time: '+new Date()+ game.test;
     }, 1000);
 
     // You can clear a periodic function by uncommenting:

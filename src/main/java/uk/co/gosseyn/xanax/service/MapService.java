@@ -84,9 +84,10 @@ public class MapService {
         Path path = null;
         for(Point point : zone.treeRankedByDistance(location)) {
             if (map.getBlockNumber(point) == block && !except.contains(point)) {
-                    path =pathFinderService.findPath(map, point, location);
+                path =pathFinderService.findPath(map, location, point);
+//                path =pathFinderService.findPath(map, point, location);
                 if (path != null) {
-                    path.reverse();
+//                    path.reverse();
                     break;
                 }
             }
