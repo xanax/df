@@ -63,12 +63,18 @@ body{
 }
 
 table td {
-    border: 1px solid #999;
-    width: 80px;
-    height: 40px;
-    margin: 10px;
-}
+    border: 1px solid black;
+    width: 24px;
+    height: 24px;
+    margin: 0px;
 
+}
+table.no-spacing {
+  border-spacing:0; /* Removes the cell spacing via CSS */
+  border-collapse: collapse;  /* Optional - if you don't want to have double border where cells touch */
+}
 td.selected {
     background-color: green;
 }
+
+img {display:block; }

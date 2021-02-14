@@ -1,82 +1,102 @@
-(function() {
-
-var i = 0;
-
-    window.game = {};
-
-    game.test = 99;
-  setInterval(function() {
-    i += 2;
-    console.log("File 1 counter: " + i);
-  }, 1000);
-
-var table = $("#table");
-
-var isMouseDown = false;
-var startRowIndex = null;
-var startCellIndex = null;
-document.write($(document).height());
-document.write($(window).height());
-function selectTo(cell) {
-
-    var row = cell.parent();
-    var cellIndex = cell.index();
-    var rowIndex = row.index();
-
-    var rowStart, rowEnd, cellStart, cellEnd;
-
-    if (rowIndex < startRowIndex) {
-        rowStart = rowIndex;
-        rowEnd = startRowIndex;
-    } else {
-        rowStart = startRowIndex;
-        rowEnd = rowIndex;
-    }
-
-    if (cellIndex < startCellIndex) {
-        cellStart = cellIndex;
-        cellEnd = startCellIndex;
-    } else {
-        cellStart = startCellIndex;
-        cellEnd = cellIndex;
-    }
-
-    for (var i = rowStart; i <= rowEnd; i++) {
-        var rowCells = table.find("tr").eq(i).find("td");
-        for (var j = cellStart; j <= cellEnd; j++) {
-            rowCells.eq(j).addClass("selected");
+function refresh() {
+    console.log('x: '+game.offsetx+' y: '+game.offsety+' z: '+game.offsetz)
+    minAjax({
+        url: "/gameData",
+        type: "GET",
+        data: {
+            left: game.offsetx,
+            top: game.offsety,
+            z: game.offsetz,
+            width: game.widthInTiles,
+            height: game.heightInTiles
+        },
+        success: function(data) {
+            game.data = JSON.parse(data);
+            console.log(game.data);
+            update();
         }
-    }
+    });
 }
 
-table.find("td").mousedown(function (e) {
-    isMouseDown = true;
-    var cell = $(this);
 
-    table.find(".selected").removeClass("selected"); // deselect everything
+function update() {
+    var time = new Date().getTime();
+    var tiles = game.data.tiles;
+    var blockData = game.data.blockData;
+    var heights = game.data.heights;
 
-    if (e.shiftKey) {
-        selectTo(cell);
-    } else {
-        cell.addClass("selected");
-        startCellIndex = cell.index();
-        startRowIndex = cell.parent().index();
+    $('.name').remove();
+
+    for (var y = 0; y < game.heightInTiles; y++) {
+        for (var x = 0; x < game.widthInTiles; x++) {
+            var id = x + y * game.widthInTiles;
+            var tile = $('#'+id);
+
+            if (heights[id] == game.offsetz) {
+                opacity = "1";
+            } else if (heights[id] == game.offsetz - 1) {
+                opacity = "0.5";
+            } else if (heights[id] == game.offsetz - 2) {
+                opacity = "0.25";
+            }
+            tile.css('opacity', opacity);
+
+            if (heights[id] <= game.offsetz && heights[id] >= game.offsetz - 2) {
+                if (tiles[id] == '2') {
+                    tile.attr('src', 'path-tile.png');
+                } else if (tiles[id] == '1') { // ROCK
+                    tile.attr('src', 'black.png');
+                } else if (tiles[id] == '6') {
+                    tile.attr('src', 'brutal-helm.png');
+                } else if (tiles[id] == '4') {
+                    tile.attr('src', 'beech.png');
+                }
+
+                if (blockData[x + '-' + y + '-' + game.offsetz]) {
+                    var id = 'name' + (x + '-' + y + '-' + game.offsetz);
+                    var name = $("<div></div>");
+                    name.addClass('name');
+                    name.attr('id', id);
+                    tile.parent().append(name);
+                    //name.style.left = (x * 24) + 'px';
+                    //name.style.top = (y * 24) + 'px';
+                    name.html(blockData[x + '-' + y + '-' + game.offsetz].name);
+                }
+            } else if (heights[id] < game.offsetz - 2) {
+                tile.attr('src', 'black.png');
+                tile.css('opacity', '0.2');
+               // card.innerHTML = '<image src="black.png" style="opacity: 0.2;"></image>';
+            } else {
+                tile.attr('src', 'black.png');
+            }
+        }
+    }
+    var end = (new Date().getTime() - time) / 1000;
+    console.log('Refresh time: ' + end);
+}
+
+
+(function() {
+    for (var y = 0; y < game.heightInTiles; y++) {
+        var row = $('<tr></tr>');
+        game.map.append(row);
+        for (var x = 0; x < game.widthInTiles; x++) {
+            var cell = $('<td></td>');
+            var img = $('<img></img>');
+            img.attr('id', y * game.widthInTiles + x);
+            row.append(cell);
+            cell.append(img);
+        }
     }
 
-    return false; // prevent text selection
-})
-.mouseover(function () {
-    if (!isMouseDown) return;
-    table.find(".selected").removeClass("selected");
-    selectTo($(this));
-})
-.bind("selectstart", function () {
-    return false;
-});
+    var i = 0;
 
-$(document).mouseup(function () {
-    isMouseDown = false;
-});
+//    setInterval(function() {
+//        i += 2;
+//        console.log("File 1 counter: " + i);
+//        getGameData();
+//        refresh();
+//    }, 5000);
 
+    refresh();
 }());
-

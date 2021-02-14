@@ -254,6 +254,7 @@ public class AStarPathFinder implements PathFinder {
 				|| (neighbour.getZ() >= map.getDepthInTiles()));
 
 		if(!invalid && neighbour.equals(target)
+				//TODO make this configurable
 				&& current.getZ() == neighbour.getZ()) {
 			return true;
 		}
