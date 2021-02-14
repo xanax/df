@@ -174,7 +174,8 @@ public class AStarPathFinder implements PathFinder {
 		}
 		path.prependStep(source);
 		
-		// thats it, we have our path 
+		// thats it, we have our path
+		log.trace("Max depth: {}", maxDepth);
 		return path;
 	}
 
