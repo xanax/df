@@ -71,8 +71,12 @@ public class AStarPathFinder implements PathFinder {
 	
 
 	@Override
-	public Path findPath(Mover mover, Point source, Point target) {
-
+	public Path findPath(Mover mover, Point source, Point target, boolean reverse) {
+		if(reverse) {
+			Point t = source;
+			source = target;
+			target = t;
+		}
 
 		// initial state for A*. The closed group is empty. Only the starting
 		// tile is in the open list and it's cost is zero, i.e. we're already there
@@ -118,7 +122,7 @@ public class AStarPathFinder implements PathFinder {
 						Point np = new Point(x+ current.point.getX(), y+ current.point.getY(),
 								z + current.point.getZ());
 
-						if (isValidLocation(mover, source, np, target, current.point)) {
+						if (isValidLocation(mover, source, np, target, current.point, reverse)) {
 							// the cost to get to this node is cost the current plus the movement
 							// cost to reach this node. Note that the heursitic value is only used
 							// in the sorted open list
@@ -176,6 +180,9 @@ public class AStarPathFinder implements PathFinder {
 		
 		// thats it, we have our path
 		log.trace("Max depth: {}", maxDepth);
+		if(reverse) {
+			path.reverse();
+		}
 		return path;
 	}
 
@@ -249,15 +256,18 @@ public class AStarPathFinder implements PathFinder {
 	 * Check if a given location is valid for the supplied mover
 	 *
 	 */
-	protected boolean isValidLocation(Mover mover, Point source, Point neighbour, Point target, Point current) {
+	protected boolean isValidLocation(Mover mover, Point source, Point neighbour, Point target, Point current, boolean reversed) {
 		boolean invalid = (neighbour.getX() < 0) || (neighbour.getY() < 0) ||(neighbour.getZ() < 0) ||
 				(neighbour.getX() >= map.getWidthInTiles()) || (neighbour.getY() >= map.getHeightInTiles()
 				|| (neighbour.getZ() >= map.getDepthInTiles()));
 
-		if(!invalid && neighbour.equals(target)
+		// ensure final square of path it at same z as target
+		if(!reversed && !invalid && neighbour.equals(target)
 				//TODO make this configurable
-				&& current.getZ() == neighbour.getZ()) {
-			return true;
+				&& current.getZ() != neighbour.getZ()) {
+			invalid = true;
+		} else if (reversed && !invalid && current.equals(source) && current.getZ() != neighbour.getZ()) {
+			invalid = true;
 		}
 		if ((!invalid) && !source.equals(neighbour)) {
 			invalid = map.blocked(mover, neighbour);

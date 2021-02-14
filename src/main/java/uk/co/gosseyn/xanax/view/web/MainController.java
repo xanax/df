@@ -146,23 +146,6 @@ public class MainController {
 
     }
 
-    @RequestMapping("/findPath")
-    public void findPath(@RequestParam int startx,
-                         @RequestParam int starty,
-                         @RequestParam int startz,
-                         @RequestParam int endx,
-                         @RequestParam int endy,
-                         @RequestParam int endz) {
-        BlockMap map = gameService.getGame(gameId).getMap();
-        finder = new AStarPathFinder(map, 500, true);
-        item = (MovingObject) map.getItem(new Point(startx, starty, startz)).iterator().next();
-        item.setPathStep(0);
-        item.setPath(
-                finder.findPath(new UnitMover(0),
-                        new Point(startx, starty, startz), new Point(endx, endy, endz)));
-
-    }
-
     @RequestMapping("/zone")
     public void zone(@RequestParam int startx,
                          @RequestParam int starty,

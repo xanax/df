@@ -13,10 +13,10 @@ import uk.co.gosseyn.xanax.domain.Point;
 @FieldDefaults(makeFinal=true, level= AccessLevel.PRIVATE)
 public class PathFinderService {
 
-    public Path findPath(BlockMap map, Point from, Point to) {
+    public Path findPath(BlockMap map, Point from, Point to, boolean reverse) {
         //TODO class variable
         AStarPathFinder finder = new AStarPathFinder(map, 500, true);
         return finder.findPath(new UnitMover(0),
-                from, to);
+                from, to, reverse);
     }
 }

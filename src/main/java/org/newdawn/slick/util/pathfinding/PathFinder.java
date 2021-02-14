@@ -4,5 +4,5 @@ import uk.co.gosseyn.xanax.domain.Point;
 
 public interface PathFinder {
 
-	public Path findPath(Mover mover, Point source, Point target);
+	public Path findPath(Mover mover, Point source, Point target, boolean reverse);
 }
