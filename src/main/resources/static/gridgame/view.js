@@ -1,24 +1,3 @@
-function refresh() {
-    console.log('x: '+game.offsetx+' y: '+game.offsety+' z: '+game.offsetz)
-    minAjax({
-        url: "/gameData",
-        type: "GET",
-        data: {
-            left: game.offsetx,
-            top: game.offsety,
-            z: game.offsetz,
-            width: game.widthInTiles,
-            height: game.heightInTiles
-        },
-        success: function(data) {
-            game.data = JSON.parse(data);
-            console.log(game.data);
-            update();
-        }
-    });
-}
-
-
 function update() {
     var time = new Date().getTime();
     var tiles = game.data.tiles;

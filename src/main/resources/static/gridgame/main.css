@@ -74,7 +74,7 @@ table.no-spacing {
   border-collapse: collapse;  /* Optional - if you don't want to have double border where cells touch */
 }
 td.selected {
-    background-color: green;
+    border: 1px solid white;
 }
 
 img {display:block; }
