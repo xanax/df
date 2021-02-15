@@ -38,7 +38,7 @@ public class ForestTask extends Task {
                 }
                 if(MovingObject.getPath() != null && MovingObject.getPathStep() == MovingObject.getPath().getLength() - 2) {
                     Point nextStep = MovingObject.getPath().getStep(MovingObject.getPathStep()+1);
-                    game.getChanges().add(new MineBlockChange(nextStep));
+                    game.getChanges().add(new MineBlockChange(zone, nextStep));
                     MovingObject.setPath(null);
                 }
             }

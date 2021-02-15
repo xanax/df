@@ -9,7 +9,7 @@ function update() {
     for (var y = 0; y < game.heightInTiles; y++) {
         for (var x = 0; x < game.widthInTiles; x++) {
             var id = x + y * game.widthInTiles;
-            var tile = $('#'+id);
+            var tile = view.imageElements[id];
 
             if (heights[id] == game.offsetz) {
                 opacity = "1";
@@ -18,12 +18,15 @@ function update() {
             } else if (heights[id] == game.offsetz - 2) {
                 opacity = "0.25";
             }
-            tile.css('opacity', opacity);
+            if(tile.css('opacity') != opacity) {
+                tile.css('opacity', opacity);
+               }
 
             if (heights[id] <= game.offsetz && heights[id] >= game.offsetz - 2) {
-                if (tiles[id] == '2') {
+                // TODO made a big diff checking if image already set
+                if (tiles[id] == '2' && tile.attr('src') != 'path-tile.png') {
                     tile.attr('src', 'path-tile.png');
-                } else if (tiles[id] == '1') { // ROCK
+                } else if (tiles[id] == '1' && tile.attr('src') != 'black.png') { // ROCK
                     tile.attr('src', 'black.png');
                 } else if (tiles[id] == '6') {
                     tile.attr('src', 'brutal-helm.png');
@@ -56,6 +59,9 @@ function update() {
 
 
 (function() {
+    window.view = {};
+    view.imageElements = new Array(game.widthInTiles * game.heightInTiles);
+
     for (var y = 0; y < game.heightInTiles; y++) {
         var row = $('<tr></tr>');
         game.map.append(row);
@@ -63,6 +69,7 @@ function update() {
             var cell = $('<td></td>');
             var img = $('<img></img>');
             img.attr('id', y * game.widthInTiles + x);
+            view.imageElements[y * game.widthInTiles + x] = img;
             row.append(cell);
             cell.append(img);
         }

@@ -2,9 +2,12 @@
     window.game = {};
     game.map = $("#table");
     game.data = {};
-    game.tileSize = 24;
+    game.tileSize = 25;
+
     game.widthInTiles = Math.trunc($(document).width() / game.tileSize);
     game.heightInTiles = Math.trunc($(document).height() / game.tileSize);
+    $('#table').css('width', game.widthInTiles * 25 + 1);
+     $('#table').css('height', game.heightInTiles * 25 + 1);
     game.offsetx = 0;
     game.offsety = 0;
     game.offsetz = 5;
@@ -43,7 +46,7 @@ function refresh() {
         },
         success: function(data) {
             game.data = JSON.parse(data);
-            console.log(game.data);
+            //console.log(game.data);
             update();
         }
     });

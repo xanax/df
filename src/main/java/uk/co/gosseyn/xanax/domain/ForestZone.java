@@ -41,6 +41,7 @@ public class ForestZone extends Zone {
     public List<Point> treeRankedByDistance(Point point) {
 
         return treeLocations.stream().sorted((o1, o2) -> {
+            //TODO calc distance multiple times maybe?
             float distance1 = o1.distanceTo(point);
             float distance2 = o2.distanceTo(point);
             if(distance1 > distance2) {

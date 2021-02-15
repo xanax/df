@@ -164,6 +164,7 @@ public class AStarPathFinder implements PathFinder {
 		// since we've got an empty open list or we've run out of search 
 		// there was no path. Just return null
 		if (nodes[target.getX()][target.getY()][target.getZ()].parent == null) {
+			log.debug("No path found between points {} and {}", source, target);
 			return null;
 		}
 		
