@@ -27,7 +27,7 @@
         var dy = 0;
         switch (code) {
             case keys.update:
-                refresh();
+                game.refresh();
                 break;
             case keys.select:
                 game.selectionx = game.cursorx + game.offsetx;
@@ -98,14 +98,14 @@
                     cursor.style.height = ((game.cursory - (game.selectiony - y) + 1) * 24) + 'px';
                 }
             } else {
-                game.offsetx += dx * Math.trunc(game.widthInTiles / 2);
-                game.offsety += dy * Math.trunc(game.heightInTiles / 2);
-                refresh();
+                game.offsetx += dx * Math.trunc(view.widthInTiles / 2);
+                game.offsety += dy * Math.trunc(view.heightInTiles / 2);
+                game.refresh();
             }
             return false;
         } else if (zinc !== 0) {
             game.offsetz += zinc;
-            refresh();
+            game.refresh();
             return false;
         }
     });
