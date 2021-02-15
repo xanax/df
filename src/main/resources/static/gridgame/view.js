@@ -3,10 +3,15 @@
     view.tileSize = 25;
     view.map = $("#table");
 
-    view.resize = function() {
+    view.init = function() {
+        var oldWidth = view.widthInTiles;
+        var oldHeight = view.heightInTiles;
+        view.widthInTiles = Math.trunc($(window).width() / view.tileSize);
+        view.heightInTiles = Math.trunc($(window).height() / view.tileSize);
+        if(oldWidth == view.widthInTiles && oldHeight == view.heightInTiles) {
+            return;
+        }
         view.map.empty();
-        view.widthInTiles = Math.trunc($(document).width() / view.tileSize);
-        view.heightInTiles = Math.trunc($(document).height() / view.tileSize);
         view.imageElements = new Array(view.widthInTiles * view.heightInTiles);
         view.map.css('width', view.widthInTiles * view.tileSize + 1);
         view.map.css('height', view.heightInTiles * view.tileSize + 1);
@@ -24,10 +29,10 @@
                 cell.append(img);
             }
         }
-        game.refresh();
+        input.init();
     }
 
-    view.update = function(game) {
+    view.update = function() {
         var time = new Date().getTime();
         var tiles = game.data.tiles;
         var blockData = game.data.blockData;
@@ -86,8 +91,7 @@
         console.log('Refresh time: ' + end);
     }
 
-
-    window.addEventListener("resize", view.resize);
+    window.addEventListener("resize", function() { view.init() ; game.update();});
 }());
 
 

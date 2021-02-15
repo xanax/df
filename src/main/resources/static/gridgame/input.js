@@ -1,4 +1,6 @@
 (function() {
+    window.input = {};
+
     var keys = {
         up: 87,
         down: 83,
@@ -27,7 +29,7 @@
         var dy = 0;
         switch (code) {
             case keys.update:
-                game.refresh();
+                game.update();
                 break;
             case keys.select:
                 game.selectionx = game.cursorx + game.offsetx;
@@ -49,6 +51,7 @@
                             endz: game.offsetz
                         },
                         success: function(data) {
+                            $('.selected').removeClass('selected');
                             game.selectionx = -1;
                             //alert(data);
                         }
@@ -100,17 +103,15 @@
             } else {
                 game.offsetx += dx * Math.trunc(view.widthInTiles / 2);
                 game.offsety += dy * Math.trunc(view.heightInTiles / 2);
-                game.refresh();
+                game.update();
             }
             return false;
         } else if (zinc !== 0) {
             game.offsetz += zinc;
-            game.refresh();
+            game.update();
             return false;
         }
     });
-
-    var table = $("#table");
 
     var isMouseDown = false;
     var startRowIndex = null;
@@ -141,7 +142,7 @@
         }
 
         for (var i = rowStart; i <= rowEnd; i++) {
-            var rowCells = table.find("tr").eq(i).find("td");
+            var rowCells = $(view.map).find("tr").eq(i).find("td");
             for (var j = cellStart; j <= cellEnd; j++) {
                 rowCells.eq(j).addClass("selected");
             }
@@ -156,33 +157,36 @@
 
     }
 
-    table.find("td").mousedown(function(e) {
-            isMouseDown = true;
-            var cell = $(this);
+    input.init = function() {
+        var table = $(view.map);
 
-            table.find(".selected").removeClass("selected"); // deselect everything
+        table.find("td").mousedown(function(e) {
+                isMouseDown = true;
+                var cell = $(this);
 
-            if (e.shiftKey) {
-                selectTo(cell);
-            } else {
-                cell.addClass("selected");
-                startCellIndex = cell.index();
-                startRowIndex = cell.parent().index();
-            }
+                table.find(".selected").removeClass("selected"); // deselect everything
 
-            return false; // prevent text selection
-        })
-        .mouseover(function() {
-            if (!isMouseDown) return;
-            table.find(".selected").removeClass("selected");
-            selectTo($(this));
+                if (e.shiftKey) {
+                    selectTo(cell);
+                } else {
+                    cell.addClass("selected");
+                    startCellIndex = cell.index();
+                    startRowIndex = cell.parent().index();
+                }
 
-        })
-        .bind("selectstart", function() {
-            return false;
+                return false; // prevent text selection
+            })
+            .mouseover(function() {
+                if (!isMouseDown) return;
+                table.find(".selected").removeClass("selected");
+                selectTo($(this));
+
+            })
+            .bind("selectstart", function() {
+                return false;
+            });
+        $(document).mouseup(function() {
+            isMouseDown = false;
         });
-
-    $(document).mouseup(function() {
-        isMouseDown = false;
-    });
+    }
 })();
