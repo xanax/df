@@ -24,6 +24,7 @@ import uk.co.gosseyn.xanax.service.GameService;
 import uk.co.gosseyn.xanax.service.MapService;
 import uk.co.gosseyn.xanax.service.NameService;
 import uk.co.gosseyn.xanax.service.PlayerService;
+import uk.co.gosseyn.xanax.service.TaskService;
 
 import javax.inject.Inject;
 import java.util.Comparator;
@@ -51,7 +52,8 @@ public class MainController {
     private MapService mapService;
     @Autowired
     private NameService nameService;
-
+    @Autowired
+    private TaskService taskService;
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
@@ -76,35 +78,10 @@ public class MainController {
         if(game == null) {
             this.newMap();
         }
-        for(SocialGroup group : game.getSocialGroups()) {
+        taskService.assignTasks(game);
+        gameService.update(game);
 
-            List<Task> tasks = group.getTasks().stream()
-                    // TODO remove completed tasks
-                    .filter(t -> !t.getStatus().equals(Task.Status.COMPLETE))
-                    .sorted(Comparator
-                    .comparingInt(t -> t.getTaskAssignments().size())).collect(Collectors.toList());
-            if(tasks.size() > 0) {
-                final AtomicInteger taskIndex = new AtomicInteger();
-
-                group.getMembers().stream()
-                        .filter(m -> m instanceof TaskAssignable).map(TaskAssignable.class::cast)
-                        .filter(a -> a.getCurrentTask() == null)
-                        .forEach(t -> {
-                            Task task = tasks.get(taskIndex.get());
-                            TaskAssignment assignment = new TaskAssignment(task, t);
-                            task.getTaskAssignments().add(assignment);
-                            t.setCurrentTask(task);
-                            if (taskIndex.incrementAndGet() >= tasks.size()) {
-                                taskIndex.set(0);
-                            }
-                        });
-                group.getTasks().forEach(t -> t.perform(game));
-            }
-            gameService.update(game);
-        }
-
-
-//        BlockMap map = game.getMap();
+//      s  BlockMap map = game.getMap();
 //        if(item != null && item.getPath() != null && item.getPathStep() < item.getPath().getLength()) {
 //            item.setPathStep(item.getPathStep() + 1); // first one contains current
 //            Point step = item.getPath().getStep(item.getPathStep());
