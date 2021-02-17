@@ -22,7 +22,9 @@ public abstract class Creature extends MovingObject implements TaskAssignable  {
     @NonFinal
     Set<TaskAssignment> taskAssignments = new HashSet<>();
     @NonFinal
-    CreatureTask currentTask;
+    CreatureTask OLDcurrentTask; //TODO maybe delete
+    @NonFinal
+    Task currentTask;
 
     @Override
     public void update(final Game game) {

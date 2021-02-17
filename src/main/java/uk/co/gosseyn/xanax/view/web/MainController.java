@@ -1,14 +1,12 @@
 package uk.co.gosseyn.xanax.view.web;
 
-import org.newdawn.slick.util.pathfinding.AStarPathFinder;
 import org.newdawn.slick.util.pathfinding.PathFinder;
-import org.newdawn.slick.util.pathfinding.example.UnitMover;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import uk.co.gosseyn.xanax.domain.Bounds;
-import uk.co.gosseyn.xanax.domain.CanJoinSocialGroup;
 import uk.co.gosseyn.xanax.domain.ForestTask;
 import uk.co.gosseyn.xanax.domain.ForestZone;
 import uk.co.gosseyn.xanax.domain.Game;
@@ -28,8 +26,10 @@ import uk.co.gosseyn.xanax.service.NameService;
 import uk.co.gosseyn.xanax.service.PlayerService;
 
 import javax.inject.Inject;
-import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
@@ -52,6 +52,9 @@ public class MainController {
     @Autowired
     private NameService nameService;
 
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
     private PathFinder finder;
 
     private MovingObject item;
@@ -60,55 +63,58 @@ public class MainController {
     private UUID playerId;
     private UUID gameId;
 
+
     @RequestMapping("/gameData")
-    public FrameData gameData(@RequestParam int left,
+    //TODO work out synchronization
+    public synchronized FrameData gameData(@RequestParam int left,
                               @RequestParam int top,
                               @RequestParam int z,
                               @RequestParam int width,
                               @RequestParam int height) {
+       // jdbcTemplate.execute("create table abc (id int not null, primary key (id));");
         Game game = gameService.getGame(gameId);
         if(game == null) {
             this.newMap();
         }
         for(SocialGroup group : game.getSocialGroups()) {
 
-            Collection<TaskAssignable> potentialAssignees = group.getMembers().stream()
-                    .filter(m -> m instanceof TaskAssignable).map(TaskAssignable.class::cast)
-                    .collect(Collectors.toList());
-            // TODO need to assign > 1 to a tasks
-            Collection<Task> unassigned = group.getTasks().stream().filter(t -> t.getTaskAssignments().isEmpty())
-                    .collect(Collectors.toList());
+            List<Task> tasks = group.getTasks().stream()
+                    // TODO remove completed tasks
+                    .filter(t -> !t.getStatus().equals(Task.Status.COMPLETE))
+                    .sorted(Comparator
+                    .comparingInt(t -> t.getTaskAssignments().size())).collect(Collectors.toList());
+            if(tasks.size() > 0) {
+                final AtomicInteger taskIndex = new AtomicInteger();
 
-            // TODO logic to determine best / who's able
-            if(!potentialAssignees.isEmpty() && !unassigned.isEmpty()) {
-                Task task = unassigned.iterator().next();
-                for(TaskAssignable assignee : potentialAssignees) {
-                    TaskAssignment taskAssignment = new TaskAssignment(task, assignee);
-                    task.getTaskAssignments().add(taskAssignment);
-                    assignee.getTaskAssignments().add(taskAssignment);
-                }
+                group.getMembers().stream()
+                        .filter(m -> m instanceof TaskAssignable).map(TaskAssignable.class::cast)
+                        .filter(a -> a.getCurrentTask() == null)
+                        .forEach(t -> {
+                            Task task = tasks.get(taskIndex.get());
+                            TaskAssignment assignment = new TaskAssignment(task, t);
+                            task.getTaskAssignments().add(assignment);
+                            t.setCurrentTask(task);
+                            if (taskIndex.incrementAndGet() >= tasks.size()) {
+                                taskIndex.set(0);
+                            }
+                        });
+                group.getTasks().forEach(t -> t.perform(game));
             }
-            //TODO process group level needs
-            for(CanJoinSocialGroup member : group.getMembers()) {
-                // TODO process individual needs
-            }
-            group.getTasks().forEach(t -> t.perform(game));
-
             gameService.update(game);
         }
 
 
-        BlockMap map = game.getMap();
-        if(item != null && item.getPath() != null && item.getPathStep() < item.getPath().getLength()) {
-            item.setPathStep(item.getPathStep() + 1); // first one contains current
-            Point step = item.getPath().getStep(item.getPathStep());
-                map.removeItem(new Point(item.getLocation().getX(),
-                        item.getLocation().getY(),
-                        item.getLocation().getZ()),item);
-                Point newLocation = new Point(step.getX(), step.getY(), item.getLocation().getZ());
-                map.addItem(newLocation, item);
-                item.setLocation(newLocation);
-        }
+//        BlockMap map = game.getMap();
+//        if(item != null && item.getPath() != null && item.getPathStep() < item.getPath().getLength()) {
+//            item.setPathStep(item.getPathStep() + 1); // first one contains current
+//            Point step = item.getPath().getStep(item.getPathStep());
+//                map.removeItem(new Point(item.getLocation().getX(),
+//                        item.getLocation().getY(),
+//                        item.getLocation().getZ()),item);
+//                Point newLocation = new Point(step.getX(), step.getY(), item.getLocation().getZ());
+//                map.addItem(newLocation, item);
+//                item.setLocation(newLocation);
+//        }
         return gameFacade.getFrameData(game, left, top, z, width, height);
     }
 

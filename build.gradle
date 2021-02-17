@@ -6,7 +6,7 @@ plugins {
 
 group = 'uk.co.gosseyn'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '8'
+sourceCompatibility = '1.8'
 
 
 configurations {
@@ -20,7 +20,7 @@ repositories {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.social:spring-social-twitter:1.1.2.RELEASE'
 //	compile group: 'org.openjdk.nashorn', name: 'nashorn-core', version: '15.0.0'

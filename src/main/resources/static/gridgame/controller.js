@@ -12,6 +12,12 @@
         game.selectionx = 0;
         game.selectiony = 0;
         game.selectionz = 0;
+
+        //TODO bring from backend
+        game.map = {};
+        game.map.width = 100;
+        game.map.height = 100;
+
         game.mode = 'navigate'
 
         minAjax({

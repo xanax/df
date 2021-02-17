@@ -3,6 +3,7 @@ package uk.co.gosseyn.xanax.domain;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashSet;
@@ -21,7 +22,7 @@ public class ForestTask extends Task {
 
     @Override
     public void perform(Game game) {
-
+        Set<TaskAssignment> completed = new HashSet<>();
         for(TaskAssignment taskAssignment : getTaskAssignments()) {
             MovingObject MovingObject = (MovingObject) taskAssignment.getTaskAssignable();
             TaskStatus status = taskAssignment.getStatus();
@@ -33,7 +34,9 @@ public class ForestTask extends Task {
                         // TODO conflict resolution in another class
                         reserved.add(point);
                     } else {
+                        completed.add(taskAssignment);
                         taskAssignment.setStatus(MineTaskStatus.BLOCKED);
+
                     }
                 }
                 if(MovingObject.getPath() != null && MovingObject.getPathStep() == MovingObject.getPath().getLength() - 2) {
@@ -42,6 +45,13 @@ public class ForestTask extends Task {
                     MovingObject.setPath(null);
                 }
             }
+        }
+        for(TaskAssignment taskAssignment : completed) {
+            getTaskAssignments().remove(taskAssignment);
+            taskAssignment.getTaskAssignable().setCurrentTask(null);
+        }
+        if(getTaskAssignments().isEmpty() && zone.getTreeLocations().isEmpty()) {
+            setStatus(Status.COMPLETE);
         }
     }
 

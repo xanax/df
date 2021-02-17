@@ -79,3 +79,12 @@ td.selected {
 }
 
 img {display:block; }
+
+#controls {
+    position: absolute;
+    left: 500px;
+    top: 500px;
+    background-color: white;
+    opacity: 50%;
+    display: none;
+}

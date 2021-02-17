@@ -19,8 +19,14 @@ public abstract class Task extends GameObject {
     int progress = 0;
     Set<TaskAssignment> taskAssignments = new HashSet<>();
 
+    @NonFinal
+    Status status = Status.ASSIGNED;
+
+
 
     public abstract void perform(final Game game);
 
-
+    public enum Status {
+        ASSIGNED, IN_PROGRESS, COMPLETE
+    }
 }

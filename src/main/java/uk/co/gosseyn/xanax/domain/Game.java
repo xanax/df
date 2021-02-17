@@ -8,6 +8,8 @@ import lombok.Setter;
 import lombok.Singular;
 import lombok.experimental.FieldDefaults;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -18,7 +20,9 @@ import java.util.UUID;
 @Getter @Setter
 @Builder
 @FieldDefaults(makeFinal=true, level= AccessLevel.PRIVATE)
+//@Entity
 public class Game {
+    //@Id
     UUID gameId = UUID.randomUUID();
 
     BlockMap map;
@@ -33,5 +37,6 @@ public class Game {
 
 
     private List<Task> tasks = new ArrayList<>();
+    private List<TaskAssignment> taskAssignments = new ArrayList<>();
 
 }

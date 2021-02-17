@@ -39,23 +39,7 @@
             case keys.zone:
                 if (game.selectionx != -1) {
 
-                    minAjax({
-                        url: "/zone",
-                        type: "GET",
-                        data: {
-                            startx: game.selectionx,
-                            starty: game.selectiony,
-                            startz: game.selectionz,
-                            endx: game.cursorx,
-                            endy: game.cursory,
-                            endz: game.offsetz
-                        },
-                        success: function(data) {
-                            $('.selected').removeClass('selected');
-                            game.selectionx = -1;
-                            //alert(data);
-                        }
-                    });
+
                 }
 
                 break;
@@ -101,8 +85,16 @@
                     cursor.style.height = ((game.cursory - (game.selectiony - y) + 1) * 24) + 'px';
                 }
             } else {
-                game.offsetx += dx * Math.trunc(view.widthInTiles / 2);
-                game.offsety += dy * Math.trunc(view.heightInTiles / 2);
+                game.offsetx += dx * Math.trunc(view.widthInTiles / 4);
+                game.offsety += dy * Math.trunc(view.heightInTiles / 4);
+                if(game.offsetx < 0) {game.offsetx = 0}
+                else if(game.offsetx > game.map.width - view.widthInTiles) {
+                    game.offsetx = game.map.width - view.widthInTiles;
+                }
+                if(game.offsety < 0) {game.offsety = 0}
+                else if(game.offsety > game.map.height - view.heightInTiles) {
+                    game.offsety = game.map.height - view.heightInTiles;
+                }
                 game.update();
             }
             return false;
@@ -185,8 +177,12 @@
             .bind("selectstart", function() {
                 return false;
             });
-        $(document).mouseup(function() {
+        table.mouseup(function(e) {
             isMouseDown = false;
+            var z = controls.zones();
+            z.css('display', 'block');
+            z.css('left', (e.clientX + 20) + 'px');
+            z.css('top', (e.clientY + 20) + 'px');
         });
     }
 })();

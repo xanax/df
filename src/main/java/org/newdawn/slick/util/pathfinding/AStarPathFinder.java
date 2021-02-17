@@ -19,7 +19,7 @@ public class AStarPathFinder implements PathFinder {
 	/** The set of nodes that have been searched through */
 	private List<Node> closed = new ArrayList<>();
 	/** The set of nodes that we do not yet consider fully searched */
-	private SortedList<Node> open = new SortedList();
+	private SortedList<Node> open = new SortedList<>();
 	
 	/** The map being searched */
 	private TileBasedMap map;
