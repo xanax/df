@@ -22,15 +22,17 @@ public class ForestTask extends Task {
 
     @Override
     public void perform(Game game) {
+        super.perform(game);
+
         Set<TaskAssignment> completed = new HashSet<>();
         for(TaskAssignment taskAssignment : getTaskAssignments()) {
-            MovingObject MovingObject = (MovingObject) taskAssignment.getTaskAssignable();
+            MovingObject movingobject = (MovingObject) taskAssignment.getTaskAssignable();
             TaskStatus status = taskAssignment.getStatus();
             if(status == null) {
-                if(MovingObject.getPath() == null) {
-                    MovingObject.setPath(mapService.pathToNearestBlock(game.getMap(), MovingObject.getLocation(), ROCK, zone, reserved));
-                    if(MovingObject.getPath() != null) {
-                        Point point = MovingObject.getPath().getLastStep();
+                if(movingobject.getPath() == null) {
+                    movingobject.setPath(mapService.pathToNearestBlock(game.getMap(), movingobject.getLocation(), ROCK, zone, reserved));
+                    if(movingobject.getPath() != null) {
+                        Point point = movingobject.getPath().getLastStep();
                         // TODO conflict resolution in another class
                         reserved.add(point);
                     } else {
@@ -39,10 +41,10 @@ public class ForestTask extends Task {
 
                     }
                 }
-                if(MovingObject.getPath() != null && MovingObject.getPathStep() == MovingObject.getPath().getLength() - 2) {
-                    Point nextStep = MovingObject.getPath().getStep(MovingObject.getPathStep()+1);
+                if(movingobject.getPath() != null && movingobject.getPathStep() == movingobject.getPath().getLength() - 2) {
+                    Point nextStep = movingobject.getPath().getStep(movingobject.getPathStep()+1);
                     game.getChanges().add(new MineBlockChange(zone, nextStep));
-                    MovingObject.setPath(null);
+                    movingobject.setPath(null);
                 }
             }
         }

@@ -12,11 +12,8 @@ import java.util.UUID;
 @Data
 @FieldDefaults(makeFinal=true, level= AccessLevel.PRIVATE)
 public class Player implements HasGroups {
-    UUID playerId = UUID.randomUUID();
+    String playerId;
     @NonFinal
     Game game;
     Collection<SocialGroup> socialGroups = new ArrayList<>();
-    public Player() {
-        this.socialGroups.add(new SocialGroup(this));
-    }
 }

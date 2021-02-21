@@ -7,6 +7,9 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.Singular;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.NonFinal;
+import org.bitcoinj.wallet.Wallet;
+import uk.co.gosseyn.xanax.service.WalletHolder;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -22,8 +25,12 @@ import java.util.UUID;
 @FieldDefaults(makeFinal=true, level= AccessLevel.PRIVATE)
 //@Entity
 public class Game {
+
     //@Id
-    UUID gameId = UUID.randomUUID();
+    String gameId;
+
+    @NonFinal
+    long frame = 0;
 
     BlockMap map;
     List<Change> changes = new ArrayList<>();
@@ -36,7 +43,8 @@ public class Game {
     Collection<SocialGroup> socialGroups = new ArrayList<>();
 
 
-    private List<Task> tasks = new ArrayList<>();
-    private List<TaskAssignment> taskAssignments = new ArrayList<>();
+     List<Task> tasks = new ArrayList<>();
+     List<TaskAssignment> taskAssignments = new ArrayList<>();
+
 
 }

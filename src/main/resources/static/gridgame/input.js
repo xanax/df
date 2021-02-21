@@ -58,7 +58,13 @@
                 dx++;
                 break;
             case keys.refresh:
-                location.reload();
+                if($('#game-menu').css('display') == 'none') {
+                    $('#game-menu').css('display', 'block');
+                    $('#game').css('display', 'none');
+                } else {
+                    $('#game-menu').css('display', 'none');
+                    $('#game').css('display', 'block');
+                }
                 break;
             case keys.zup:
                 zinc = 1;

@@ -16,12 +16,13 @@ import java.util.stream.Collectors;
 public class TaskService {
     public void assignTasks(Game game) {
         for(SocialGroup group : game.getSocialGroups()) {
+            group.getTasks().removeIf(t -> t.getRepeatFrequency() == 0
+                    && t.getStatus() == Task.Status.COMPLETE);
 
             List<Task> tasks = group.getTasks().stream()
-                    // TODO remove completed tasks
-                    .filter(t -> !t.getStatus().equals(Task.Status.COMPLETE))
                     .sorted(Comparator
                             .comparingInt(t -> t.getTaskAssignments().size())).collect(Collectors.toList());
+
             if(tasks.size() > 0) {
                 final AtomicInteger taskIndex = new AtomicInteger();
 

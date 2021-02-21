@@ -12,6 +12,7 @@
         game.selectionx = 0;
         game.selectiony = 0;
         game.selectionz = 0;
+        game.playerId = '';
 
         //TODO bring from backend
         game.map = {};
@@ -21,21 +22,39 @@
         game.mode = 'navigate'
 
         minAjax({
-            url: "/newMap",
+            url: "/newGame",
             type: "GET",
             data: {},
-            success: function(data) {}
+            success: function(data) {
+                game.data = JSON.parse(data);
+                console.log('Game ID: '+game.data.gameId);
+
+                minAjax({
+                    url: "/newPlayer",
+                    type: "GET",
+                    data: {
+                        gameId: game.data.gameId
+                    },
+                    success: function(data) {
+                        game.playerId = data;
+                        console.log('Player ID: '+game.playerId);
+                        view.init();
+                        input.init();
+
+                        game.update();
+                    }
+                });
+            }
         });
-        view.init();
-        input.init();
     }
 
     game.update = function() {
         console.log('x: '+game.offsetx+' y: '+game.offsety+' z: '+game.offsetz);
         minAjax({
-            url: "/gameData",
+            url: "/frameData",
             type: "GET",
             data: {
+                playerId: game.playerId,
                 left: game.offsetx,
                 top: game.offsety,
                 z: game.offsetz,
@@ -43,7 +62,7 @@
                 height: view.heightInTiles
             },
             success: function(data) {
-                game.data = JSON.parse(data);
+                game.frameData = JSON.parse(data);
                 //console.log(game.data);
                 view.update();
             }
@@ -51,5 +70,4 @@
     }
 
     game.init();
-    game.update();
 })();

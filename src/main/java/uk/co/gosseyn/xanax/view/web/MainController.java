@@ -61,83 +61,45 @@ public class MainController {
 
     private MovingObject item;
 
-    //TODO this will be passed from client
-    private UUID playerId;
-    private UUID gameId;
-
-
-    @RequestMapping("/gameData")
+    @RequestMapping("/frameData")
     //TODO work out synchronization
-    public synchronized FrameData gameData(@RequestParam int left,
+    public synchronized FrameData gameData(@RequestParam String playerId, @RequestParam int left,
                               @RequestParam int top,
                               @RequestParam int z,
                               @RequestParam int width,
                               @RequestParam int height) {
        // jdbcTemplate.execute("create table abc (id int not null, primary key (id));");
-        Game game = gameService.getGame(gameId);
-        if(game == null) {
-            this.newMap();
-        }
+        Player player = playerService.getPlayer(playerId);
+        Game game = gameService.getGame(player.getGame().getGameId());
         taskService.assignTasks(game);
         gameService.update(game);
-
-//      s  BlockMap map = game.getMap();
-//        if(item != null && item.getPath() != null && item.getPathStep() < item.getPath().getLength()) {
-//            item.setPathStep(item.getPathStep() + 1); // first one contains current
-//            Point step = item.getPath().getStep(item.getPathStep());
-//                map.removeItem(new Point(item.getLocation().getX(),
-//                        item.getLocation().getY(),
-//                        item.getLocation().getZ()),item);
-//                Point newLocation = new Point(step.getX(), step.getY(), item.getLocation().getZ());
-//                map.addItem(newLocation, item);
-//                item.setLocation(newLocation);
-//        }
         return gameFacade.getFrameData(game, left, top, z, width, height);
     }
 
-    @RequestMapping("/newMap")
-    public void newMap() {
-        item = null;
-        BlockMap map =  mapService.newMap(100, 100, 8, 15);
+    @RequestMapping("/newGame")
+    public Game newGame() {
+        Game game = gameService.newGame();
+        return game;
+    }
 
-        Man man = new Man(nameService.newName());
-        Man man2 = new Man(nameService.newName());
-        mapService.placeItem(map, new Vector2d(0, 44), man);
-        mapService.placeItem(map, new Vector2d(3, 45), man2);
-
-        mapService.placeBlock(map, new Vector2d(8, 49), TREE);
-
-        mapService.placeBlock(map, new Vector2d(9, 48), TREE);
-        mapService.placeBlock(map, new Vector2d(11, 50), TREE);
-        mapService.placeBlock(map, new Vector2d(19, 51), TREE);
-        mapService.placeBlock(map, new Vector2d(6, 55), TREE);
-        mapService.placeBlock(map, new Vector2d(14, 57), TREE);
-        mapService.placeBlock(map, new Vector2d(4, 51), TREE);
-
-        Game game = gameService.newGame(map);
-        game.getActiveItems().add(man);
-        game.getActiveItems().add(man2);
-        this.gameId = game.getGameId();
+    @RequestMapping("/newPlayer")
+    public String newPlayer(@RequestParam String gameId) {
         Player player = playerService.newPlayer();
-        game.getSocialGroups().addAll(player.getSocialGroups());
-        player.setGame(game);
-        player.getSocialGroups().iterator().next().getMembers().addAll(asList(man, man2));
-        playerService.savePlayer(player);
-        playerId = player.getPlayerId();
-        game.getPlayers().add(player);
-        gameService.saveGame(game);
-
+        gameService.addPlayer(gameId, player);
+        return player.getPlayerId();
     }
 
     @RequestMapping("/zone")
-    public void zone(@RequestParam int startx,
+    public void zone(@RequestParam String playerId, @RequestParam int startx,
                          @RequestParam int starty,
                          @RequestParam int startz,
                          @RequestParam int endx,
                          @RequestParam int endy,
                          @RequestParam int endz) {
-        BlockMap map = gameService.getGame(gameId).getMap();
+
         Player player = playerService.getPlayer(playerId);
+        BlockMap map = gameService.getGame(player.getGame().getGameId()).getMap();
+
 
         //zone.setLocation(location);
         //zone.setExtent(extent);

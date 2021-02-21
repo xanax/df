@@ -23,6 +23,7 @@
                         url: "/zone",
                         type: "GET",
                         data: {
+                            playerId: game.playerId,
                             startx: game.selectionx,
                             starty: game.selectiony,
                             startz: game.selectionz,

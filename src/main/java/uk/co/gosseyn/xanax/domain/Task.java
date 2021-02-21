@@ -2,9 +2,7 @@ package uk.co.gosseyn.xanax.domain;
 
 import lombok.AccessLevel;
 import lombok.Data;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
 
@@ -20,13 +18,24 @@ public abstract class Task extends GameObject {
     Set<TaskAssignment> taskAssignments = new HashSet<>();
 
     @NonFinal
-    Status status = Status.ASSIGNED;
+    Status status = Status.CREATED;
+
+    long repeatFrequency = 0;
+
+    @NonFinal
+    long lastRan;
 
 
 
-    public abstract void perform(final Game game);
+    public void perform(final Game game) {
+        if(game.getFrame() - lastRan < repeatFrequency) {
+            return;
+        }
+        status = Status.CREATED;
+        lastRan = game.getFrame();
+    }
 
     public enum Status {
-        ASSIGNED, IN_PROGRESS, COMPLETE
+        CREATED, IN_PROGRESS, COMPLETE
     }
 }

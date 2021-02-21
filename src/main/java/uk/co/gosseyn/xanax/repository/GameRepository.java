@@ -10,7 +10,7 @@ import java.util.UUID;
 @Component
 public class GameRepository {
     private Game game;
-    public Game getGame(UUID gameId) {
+    public Game getGame(String gameId) {
         return game;
     }
     public void saveGame(Game game) {

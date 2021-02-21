@@ -4,6 +4,7 @@
     view.map = $("#table");
 
     view.init = function() {
+        console.log(window.devicePixelRatio);
         var oldWidth = view.widthInTiles;
         var oldHeight = view.heightInTiles;
         view.widthInTiles = Math.trunc($(window).width() / view.tileSize);
@@ -34,9 +35,9 @@
 
     view.update = function() {
         var time = new Date().getTime();
-        var tiles = game.data.tiles;
-        var blockData = game.data.blockData;
-        var heights = game.data.heights;
+        var tiles = game.frameData.tiles;
+        var blockData = game.frameData.blockData;
+        var heights = game.frameData.heights;
 
         $('.name').remove();
 

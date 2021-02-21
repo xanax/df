@@ -11,12 +11,12 @@ import java.util.UUID;
 
 @Component
 public class PlayerRepository {
-    private Map<UUID, Player> players = new HashMap<>();
-    public Player getPlayer(UUID playerId) {
+    private Map<String, Player> players = new HashMap<>();
+    public Player getPlayer(String playerId) {
         return players.get(playerId);
     }
-    public UUID savePlayer(Player player) {
-        UUID playerId = player.getPlayerId();
+    public String savePlayer(Player player) {
+        String playerId = player.getPlayerId();
         players.put(playerId, player);
         return playerId;
     }
