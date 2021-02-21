@@ -1,5 +1,6 @@
 package uk.co.gosseyn.xanax.view.web;
 
+import lombok.extern.slf4j.Slf4j;
 import org.newdawn.slick.util.pathfinding.PathFinder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -36,6 +37,7 @@ import java.util.stream.Collectors;
 import static java.util.Arrays.asList;
 import static uk.co.gosseyn.xanax.domain.BlockMap.TREE;
 
+@Slf4j
 @RestController
 public class MainController {
 
@@ -69,11 +71,14 @@ public class MainController {
                               @RequestParam int width,
                               @RequestParam int height) {
        // jdbcTemplate.execute("create table abc (id int not null, primary key (id));");
+        log.info("Frame start: {}", System.currentTimeMillis());
         Player player = playerService.getPlayer(playerId);
         Game game = gameService.getGame(player.getGame().getGameId());
         taskService.assignTasks(game);
         gameService.update(game);
-        return gameFacade.getFrameData(game, left, top, z, width, height);
+        FrameData frameData = gameFacade.getFrameData(game, left, top, z, width, height);
+        log.info("Frame end: {}", System.currentTimeMillis());
+        return frameData;
     }
 
     @RequestMapping("/newGame")
@@ -87,6 +92,11 @@ public class MainController {
         Player player = playerService.newPlayer();
         gameService.addPlayer(gameId, player);
         return player.getPlayerId();
+    }
+
+    @RequestMapping("/joinGame")
+    public synchronized void joinGame(@RequestParam String gameId, @RequestParam String playerId) {
+        gameService.addPlayer(gameId, playerService.getPlayer(playerId));
     }
 
     @RequestMapping("/zone")

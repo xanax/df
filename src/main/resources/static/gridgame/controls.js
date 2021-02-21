@@ -43,5 +43,22 @@
         return controls.element;
     }
 
+    $('#join-game').click(function() {
+        minAjax({
+            url: "/joinGame",
+            type: "GET",
+            data: {
+                gameId: $('#game-id').val(),
+                playerId: game.playerId
+            },
+            success: function(data) {
+
+                console.log('Joined game.');
+                view.init();
+                input.init();
+                game.update();
+            }
+        });
+    });
 
 })();
