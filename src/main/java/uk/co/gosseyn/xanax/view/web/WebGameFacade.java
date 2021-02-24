@@ -2,6 +2,7 @@ package uk.co.gosseyn.xanax.view.web;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import uk.co.gosseyn.xanax.domain.Bounds;
 import uk.co.gosseyn.xanax.domain.Game;
 import uk.co.gosseyn.xanax.domain.BlockMap;
 import uk.co.gosseyn.xanax.domain.Locatable;
@@ -16,17 +17,24 @@ import java.util.List;
 import static java.util.Collections.singleton;
 
 @Component
-public class GameFacade {
+public class WebGameFacade implements uk.co.gosseyn.xanax.view.GameFacade {
     @Autowired
     private GameService gameService;
 
-    public FrameData getFrameData(Game game, int xTileOffset, int yTileOffset, int zTileOffset, int screenWidthInTiles, int screenHeightInTiles) {
+    @Override
+    public FrameData getFrameData(Game game, Bounds bounds) {
+        int xTileOffset = bounds.getMin().getX();
+        int yTileOffset = bounds.getMin().getY();
+        int zTileOffset = bounds.getMin().getZ();
+        int screenWidthInTiles = bounds.getMax().getX();
+        int screenHeightInTiles = bounds.getMax().getY();
+
         FrameData frameData = new FrameData();
         frameData.setTiles(new int[screenWidthInTiles*screenHeightInTiles]);
         frameData.setHeights(new int[screenWidthInTiles*screenHeightInTiles]);
 
         BlockMap map = game.getMap();
-
+        frameData.setFrame(game.getFrame());
         if (xTileOffset < 0) {
             xTileOffset = 0;
         } else if (xTileOffset > map.getWidthInTiles() - screenWidthInTiles) {
@@ -37,27 +45,26 @@ public class GameFacade {
         } else if (yTileOffset > map.getHeightInTiles() - screenHeightInTiles) {
             yTileOffset = map.getHeightInTiles() - screenHeightInTiles;
         }
-
         for (int y = yTileOffset; y < yTileOffset + screenHeightInTiles; y++) {
             for (int x = xTileOffset; x < xTileOffset + screenWidthInTiles; x++) {
                 int screenTileX = x - xTileOffset;
                 int screenTileY = y - yTileOffset;
                 int screenTileIndex = screenTileY * screenWidthInTiles + screenTileX;
                 Point point = new Point(x, y, zTileOffset);
-                while(map.getBlockNumber(point) == BlockMap.EMPTY && map.getItem(point).isEmpty() && point.getZ() > 0) {
+                while (map.getBlockNumber(point) == BlockMap.EMPTY && map.getItem(point).isEmpty() && point.getZ() > 0) {
                     point.addz(-1);
                 }
-                if(point.getZ() == 0) {
+                if (point.getZ() == 0) {
                     frameData.getTiles()[screenTileIndex] = map.getBlockNumber(new Point(x, y, zTileOffset));
-                } else if(!map.getItem(point).isEmpty()) {
+                } else if (!map.getItem(point).isEmpty()) {
                     frameData.getTiles()[screenTileIndex] = map.getItem(point).iterator().next().getCode();
                     Locatable locatable = map.getItem(point).iterator().next();
-                    if(locatable instanceof Nameable) {
+                    if (locatable instanceof Nameable) {
                         BlockData blockData = new BlockData();
-                        Nameable nameable = (Nameable)locatable;
+                        Nameable nameable = (Nameable) locatable;
                         blockData.setName(nameable.getName());
-                        frameData.getBlockData().put((point.getX() - xTileOffset)+"-"+(point.getY() - yTileOffset)+"-"+point.getZ(),
-                            blockData);
+                        frameData.getBlockData().put((point.getX() - xTileOffset) + "-" + (point.getY() - yTileOffset) + "-" + point.getZ(),
+                                blockData);
                     }
                 } else {
                     frameData.getTiles()[screenTileIndex] = map.getBlockNumber(point);
@@ -65,6 +72,7 @@ public class GameFacade {
                 frameData.getHeights()[screenTileIndex] = point.getZ();
             }
         }
+
         return frameData;
     }
 }

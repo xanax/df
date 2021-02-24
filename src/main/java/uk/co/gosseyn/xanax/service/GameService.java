@@ -1,7 +1,9 @@
 package uk.co.gosseyn.xanax.service;
 
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import uk.co.gosseyn.xanax.domain.Active;
 import uk.co.gosseyn.xanax.domain.Change;
@@ -13,7 +15,9 @@ import uk.co.gosseyn.xanax.domain.Vector2d;
 import uk.co.gosseyn.xanax.repository.GameRepository;
 
 import javax.inject.Inject;
+import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -22,6 +26,7 @@ import static java.util.Arrays.asList;
 import static uk.co.gosseyn.xanax.domain.BlockMap.TREE;
 
 @Service
+@Slf4j
 public class GameService {
 
     @Autowired
@@ -34,6 +39,9 @@ public class GameService {
     private BitcoinService bitcoinService;
 
     @Inject NameService nameService;
+
+    @Inject
+    private TaskService taskService;
 
     public Game getGame(String gameId) {
         return gameRepository.getGame(gameId);
@@ -83,10 +91,30 @@ public class GameService {
 
         //TODO conflict resolution for when two items move to same place.
         // bear in mind ability to undo so all changes need to go via here
-        for(Change change : game.getChanges()) {
-            change.perform(game);
-        }
+     //   synchronized (game.lock) {
+            for (Change change : game.getChanges()) {
+                change.perform(game);
+            }
+            game.setFrame(game.getFrame().add(BigInteger.ONE));
+     //   }
         game.getChanges().clear();
     }
 
+    @Async
+    public void gameLoop() throws InterruptedException {
+        while(true) {
+            synchronized (gameRepository.lock) {
+                for (Game game : gameRepository.findAllGames()) {
+                    try {
+                        taskService.assignTasks(game);
+                        update(game);
+                        //log.trace("Updated game {}", game);
+                    } catch (Exception e) {
+                        log.error("Update game failed: {}", game.getGameId(), e);
+                    }
+                }
+            }
+            Thread.sleep(500);
+        }
+    }
 }

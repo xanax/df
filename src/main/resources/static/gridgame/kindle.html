@@ -8,16 +8,8 @@
     <link href="main.css" rel="stylesheet" />
 </head>
 <body>
-<div id="game-menu">
-    <button id="new-game">New Game</button><br>
-    <label for="game-id">Game id</label><input id="game-id"/>
-    <button id="join-game">Join Game</button>
-    <div id="debugDiv">debug</div>
-</div>
-<div id="game">
-    <table id="table" class="no-spacing" cellspacing="0"></table>
-</div>
-<div id="controls"><button>test</button></div>
+<div id="debugDiv">xxx</div>
+<script src="../js/jquery-1.9.1.min.js"></script>
 <script>
         if (typeof console  != "undefined")
         if (typeof console.log != 'undefined')
@@ -30,16 +22,7 @@
         $('#debugDiv').append('<p>' + message + '</p>');
     };
     console.error = console.debug = console.info =  console.log
-    console.log('cheesy');
+    console.log('cheese');
 </script>
-<script src="../js/jquery-1.9.1.min.js"></script>
-
-<script src="../js/json.js"></script>
-<script src="../js/minAjax.js"></script>
-<script src="../js/util.js"></script>
-<script src="controls.js"></script>
-<script src="input.js"></script>
-<script src="view.js"></script>
-<script src="controller.js"></script>
 </body>
 </html>

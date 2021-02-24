@@ -7,6 +7,7 @@ import uk.co.gosseyn.xanax.domain.Task;
 import uk.co.gosseyn.xanax.domain.TaskAssignable;
 import uk.co.gosseyn.xanax.domain.TaskAssignment;
 
+import java.math.BigInteger;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -16,7 +17,7 @@ import java.util.stream.Collectors;
 public class TaskService {
     public void assignTasks(Game game) {
         for(SocialGroup group : game.getSocialGroups()) {
-            group.getTasks().removeIf(t -> t.getRepeatFrequency() == 0
+            group.getTasks().removeIf(t -> t.getRepeatFrequency().equals(BigInteger.ZERO)
                     && t.getStatus() == Task.Status.COMPLETE);
 
             List<Task> tasks = group.getTasks().stream()

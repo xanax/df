@@ -13,6 +13,7 @@ import uk.co.gosseyn.xanax.service.WalletHolder;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -28,9 +29,9 @@ public class Game {
 
     //@Id
     String gameId;
-
     @NonFinal
-    long frame = 0;
+    @Builder.Default
+    BigInteger frame = BigInteger.ZERO;
 
     BlockMap map;
     List<Change> changes = new ArrayList<>();

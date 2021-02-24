@@ -73,5 +73,5 @@
 
     var frameRefreshInterval = setInterval(function() {
         game.update();
-    }, 1000);
+    }, 500);
 })();

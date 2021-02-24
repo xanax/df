@@ -22,7 +22,7 @@
 
         // get key press in cross browser way
         code = e.which || e.keyCode;
-        console.log('Keycode: '+code);
+        //console.log('Keycode: '+code);
         var zinc = 0,
             index, newIndex;
         var dx = 0;
@@ -91,8 +91,8 @@
                     cursor.style.height = ((game.cursory - (game.selectiony - y) + 1) * 24) + 'px';
                 }
             } else {
-                game.offsetx += dx * Math.trunc(view.widthInTiles / 4);
-                game.offsety += dy * Math.trunc(view.heightInTiles / 4);
+                game.offsetx += dx * Math.floor(view.widthInTiles / 4);
+                game.offsety += dy * Math.floor(view.heightInTiles / 4);
                 if(game.offsetx < 0) {game.offsetx = 0}
                 else if(game.offsetx > game.map.width - view.widthInTiles) {
                     game.offsetx = game.map.width - view.widthInTiles;

@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
 
+import java.math.BigInteger;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,15 +21,15 @@ public abstract class Task extends GameObject {
     @NonFinal
     Status status = Status.CREATED;
 
-    long repeatFrequency = 0;
+    BigInteger repeatFrequency = BigInteger.ZERO;
 
     @NonFinal
-    long lastRan;
+    BigInteger lastRan = BigInteger.ZERO;
 
 
 
     public void perform(final Game game) {
-        if(game.getFrame() - lastRan < repeatFrequency) {
+        if(game.getFrame().subtract(lastRan).compareTo(repeatFrequency) < 0) {
             return;
         }
         status = Status.CREATED;

@@ -12,15 +12,9 @@ import uk.co.gosseyn.xanax.domain.ForestTask;
 import uk.co.gosseyn.xanax.domain.ForestZone;
 import uk.co.gosseyn.xanax.domain.Game;
 import uk.co.gosseyn.xanax.domain.BlockMap;
-import uk.co.gosseyn.xanax.domain.Man;
 import uk.co.gosseyn.xanax.domain.MovingObject;
 import uk.co.gosseyn.xanax.domain.Player;
 import uk.co.gosseyn.xanax.domain.Point;
-import uk.co.gosseyn.xanax.domain.SocialGroup;
-import uk.co.gosseyn.xanax.domain.Task;
-import uk.co.gosseyn.xanax.domain.TaskAssignable;
-import uk.co.gosseyn.xanax.domain.TaskAssignment;
-import uk.co.gosseyn.xanax.domain.Vector2d;
 import uk.co.gosseyn.xanax.service.GameService;
 import uk.co.gosseyn.xanax.service.MapService;
 import uk.co.gosseyn.xanax.service.NameService;
@@ -28,22 +22,14 @@ import uk.co.gosseyn.xanax.service.PlayerService;
 import uk.co.gosseyn.xanax.service.TaskService;
 
 import javax.inject.Inject;
-import java.util.Comparator;
-import java.util.List;
-import java.util.UUID;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
-
-import static java.util.Arrays.asList;
-import static uk.co.gosseyn.xanax.domain.BlockMap.TREE;
 
 @Slf4j
 @RestController
 public class MainController {
 
-    private final GameFacade gameFacade;
+    private final WebGameFacade gameFacade;
     @Inject
-    public MainController(GameFacade gameFacade) {
+    public MainController(WebGameFacade gameFacade) {
         this.gameFacade = gameFacade;
     }
     @Autowired
@@ -71,14 +57,13 @@ public class MainController {
                               @RequestParam int width,
                               @RequestParam int height) {
        // jdbcTemplate.execute("create table abc (id int not null, primary key (id));");
-        log.info("Frame start: {}", System.currentTimeMillis());
         Player player = playerService.getPlayer(playerId);
-        Game game = gameService.getGame(player.getGame().getGameId());
-        taskService.assignTasks(game);
-        gameService.update(game);
-        FrameData frameData = gameFacade.getFrameData(game, left, top, z, width, height);
-        log.info("Frame end: {}", System.currentTimeMillis());
-        return frameData;
+        if(player == null || player.getGame() == null) {
+            return null;
+        }
+
+        return playerService.getCurrentFrameData(player,
+                new Bounds(new Point(left, top, z), new Point(width, height, z)));
     }
 
     @RequestMapping("/newGame")
@@ -89,13 +74,14 @@ public class MainController {
 
     @RequestMapping("/newPlayer")
     public String newPlayer(@RequestParam String gameId) {
-        Player player = playerService.newPlayer();
+        Player player = playerService.newPlayer(gameFacade);
         gameService.addPlayer(gameId, player);
         return player.getPlayerId();
     }
 
     @RequestMapping("/joinGame")
     public synchronized void joinGame(@RequestParam String gameId, @RequestParam String playerId) {
+        //TODO remove from existing game. also remove games with no players.
         gameService.addPlayer(gameId, playerService.getPlayer(playerId));
     }
 

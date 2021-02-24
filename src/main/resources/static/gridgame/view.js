@@ -4,11 +4,11 @@
     view.map = $("#table");
 
     view.init = function() {
-        console.log(window.devicePixelRatio);
+        //console.log(window.devicePixelRatio);
         var oldWidth = view.widthInTiles;
         var oldHeight = view.heightInTiles;
-        view.widthInTiles = Math.trunc($(window).width() / view.tileSize);
-        view.heightInTiles = Math.trunc($(window).height() / view.tileSize);
+        view.widthInTiles = Math.floor($(window).width() / view.tileSize);
+        view.heightInTiles = Math.floor($(window).height() / view.tileSize);
         if(oldWidth == view.widthInTiles && oldHeight == view.heightInTiles) {
             return;
         }
@@ -49,18 +49,23 @@
                 if (heights[id] == game.offsetz) {
                     opacity = "1";
                 } else if (heights[id] == game.offsetz - 1) {
-                    opacity = "0.5";
+                    opacity = "0.50";
                 } else if (heights[id] == game.offsetz - 2) {
                     opacity = "0.25";
+                } else if (heights[id] == game.offsetz - 3) {
+                    opacity = "0.12";
+                } else if (heights[id] == game.offsetz - 4) {
+                    opacity = "0.06";
                 }
                 if(tile.css('opacity') != opacity) {
                     tile.css('opacity', opacity);
                    }
 
-                if (heights[id] <= game.offsetz && heights[id] >= game.offsetz - 2) {
+                if (heights[id] <= game.offsetz && heights[id] >= game.offsetz - 4) {
                     // TODO made a big diff checking if image already set
                     if (tiles[id] == '2' && tile.attr('src') != 'path-tile.png') {
                         tile.attr('src', 'path-tile.png');
+                       // console.log(tile.html());
                     } else if (tiles[id] == '1' && tile.attr('src') != 'black.png') { // ROCK
                         tile.attr('src', 'black.png');
                     } else if (tiles[id] == '6') {
@@ -79,9 +84,9 @@
                         //name.style.top = (y * 24) + 'px';
                         name.html(blockData[x + '-' + y + '-' + game.offsetz].name);
                     }
-                } else if (heights[id] < game.offsetz - 2) {
+                } else if (heights[id] < game.offsetz - 4) {
                     tile.attr('src', 'black.png');
-                    tile.css('opacity', '0.2');
+                    tile.css('opacity', '0.05');
                    // card.innerHTML = '<image src="black.png" style="opacity: 0.2;"></image>';
                 } else {
                     tile.attr('src', 'black.png');
