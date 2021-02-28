@@ -1,7 +1,7 @@
 (function() {
     window.game = {};
 
-    game.init = function() {
+    game.newGame = function() {
         game.data = {};
         game.offsetx = 0;
         game.offsety = 0;
@@ -69,9 +69,4 @@
         });
     }
 
-    game.init();
-
-    var frameRefreshInterval = setInterval(function() {
-        game.update();
-    }, 500);
 })();

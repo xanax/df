@@ -28,6 +28,8 @@ public class ForestTask extends Task {
         for(TaskAssignment taskAssignment : getTaskAssignments()) {
             MovingObject movingobject = (MovingObject) taskAssignment.getTaskAssignable();
             TaskStatus status = taskAssignment.getStatus();
+
+
             if(status == null) {
                 if(movingobject.getPath() == null) {
                     movingobject.setPath(mapService.pathToNearestBlock(game.getMap(), movingobject.getLocation(), ROCK, zone, reserved));
@@ -55,6 +57,19 @@ public class ForestTask extends Task {
         if(getTaskAssignments().isEmpty() && zone.getTreeLocations().isEmpty()) {
             setStatus(Status.COMPLETE);
         }
+    }
+
+    @Override
+    public boolean canDo(final TaskAssignable taskAssignee) {
+        return false;
+    }
+
+    @Override
+    public float suitability(final TaskAssignable taskAssignee) {
+        if(!(taskAssignee instanceof MovingObject)) {
+            return Float.MAX_VALUE;
+        }
+        return ((MovingObject)taskAssignee).getLocation().distanceTo(zone.getBounds().center());
     }
 
     public enum MineTaskStatus implements TaskStatus  {

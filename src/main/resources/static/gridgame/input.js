@@ -30,6 +30,13 @@
         switch (code) {
             case keys.update:
                 game.update();
+                if(game.paused) {
+                    game.refreshInterval = setInterval(game.update, 500);
+                    game.paused = false;
+                } else {
+                    clearInterval(game.refreshInterval);
+                    game.paused = true;
+                }
                 break;
             case keys.select:
                 game.selectionx = game.cursorx + game.offsetx;

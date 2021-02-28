@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.IntStream;
 
 import static java.util.Arrays.asList;
 import static uk.co.gosseyn.xanax.domain.BlockMap.TREE;
@@ -66,17 +67,16 @@ public class GameService {
     }
 
     public void addPlayer(String gameId, Player player) {
-        Man man = new Man(nameService.newName());
-        Man man2 = new Man(nameService.newName());
         Game game = getGame(gameId);
-        game.getActiveItems().add(man);
-        game.getActiveItems().add(man2);
 
-        mapService.placeItem(game.getMap(), new Vector2d(0, 44), man);
-        mapService.placeItem(game.getMap(), new Vector2d(3, 45), man2);
+        for(int i = 0; i < 10; i++) {
+            Man man = new Man(nameService.newName());
+            game.getActiveItems().add(man);
+            mapService.placeItem(game.getMap(), new Vector2d(i, i), man);
+            player.getSocialGroups().iterator().next().getMembers().add(man);
+        }
 
         player.setGame(game);
-        player.getSocialGroups().iterator().next().getMembers().addAll(asList(man, man2));
         game.getSocialGroups().addAll(player.getSocialGroups());
         game.getPlayers().add(player);
     }
@@ -103,6 +103,7 @@ public class GameService {
     @Async
     public void gameLoop() throws InterruptedException {
         while(true) {
+            //TODO a game per thread
             synchronized (gameRepository.lock) {
                 for (Game game : gameRepository.findAllGames()) {
                     try {

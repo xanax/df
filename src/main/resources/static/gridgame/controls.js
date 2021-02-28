@@ -59,6 +59,11 @@
                 game.update();
             }
         });
+        game.refreshInterval = setInterval(game.update, 500);
+    });
+
+    $('#new-game').click(function() {
+        game.newGame();
     });
 
 })();

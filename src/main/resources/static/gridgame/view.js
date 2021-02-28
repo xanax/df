@@ -94,7 +94,7 @@
             }
         }
         var end = (new Date().getTime() - time) / 1000;
-        console.log('Refresh time: ' + end);
+        //console.log('Refresh time: ' + end);
     }
 
     window.addEventListener("resize", function() { view.init() ; game.update();});

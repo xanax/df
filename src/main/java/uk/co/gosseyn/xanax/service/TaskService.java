@@ -1,6 +1,7 @@
 package uk.co.gosseyn.xanax.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import uk.co.gosseyn.xanax.domain.Game;
 import uk.co.gosseyn.xanax.domain.SocialGroup;
 import uk.co.gosseyn.xanax.domain.Task;
@@ -17,15 +18,22 @@ import java.util.stream.Collectors;
 public class TaskService {
     public void assignTasks(Game game) {
         for(SocialGroup group : game.getSocialGroups()) {
+
+            // Remove non-repeatable and completed tasks (one time tasks)
             group.getTasks().removeIf(t -> t.getRepeatFrequency().equals(BigInteger.ZERO)
                     && t.getStatus() == Task.Status.COMPLETE);
 
+            // Get all tasks sorted by number of assignees
             List<Task> tasks = group.getTasks().stream()
                     .sorted(Comparator
                             .comparingInt(t -> t.getTaskAssignments().size())).collect(Collectors.toList());
 
-            if(tasks.size() > 0) {
+            if(!CollectionUtils.isEmpty(tasks)) {
                 final AtomicInteger taskIndex = new AtomicInteger();
+
+                //TODO separate into task types so can check suitablity
+
+
 
                 group.getMembers().stream()
                         .filter(m -> m instanceof TaskAssignable).map(TaskAssignable.class::cast)
