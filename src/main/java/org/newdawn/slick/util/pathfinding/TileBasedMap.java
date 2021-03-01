@@ -15,5 +15,5 @@ public interface TileBasedMap {
 	public int getDepthInTiles();
 	public void pathFinderVisited(Point point);
 	public boolean blocked(Mover mover, Point point);
-	public float getCost(Mover mover, Point source, Point target);
+	public int getCost(Mover mover, Point source, Point target);
 }

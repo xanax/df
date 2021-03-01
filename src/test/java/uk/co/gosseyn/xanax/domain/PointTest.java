@@ -9,7 +9,7 @@ class PointTest {
 
     @Test
     public void distanceTo() {
-        float distance = new Point(1,2,3)
+        int distance = new Point(1,2,3)
                 .distanceTo(new Point(123, 345, 567));
         assertEquals(67128904, (int)(distance * 100000));
     }

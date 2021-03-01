@@ -42,13 +42,10 @@ public  class Point {
     public Point clone() {
         return new Point(this.x, this.y, this.z);
     }
-    public float distanceTo(Point target) {
-        float dx = target.getX() - this.getX();
-        float dy = target.getY() - this.getY();
-        float dz = target.getZ() - this.getZ();
-        return (float) (
-                Math.sqrt(dx * dx +
-                        dy * dy +
-                        dz * dz));
+    public int distanceTo(Point target) {
+        int dx = target.getX() - this.getX();
+        int dy = target.getY() - this.getY();
+        int dz = target.getZ() - this.getZ();
+        return (dx * dx +dy * dy +dz * dz);
     }
 }

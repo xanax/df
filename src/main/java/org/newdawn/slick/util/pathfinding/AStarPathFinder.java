@@ -126,7 +126,7 @@ public class AStarPathFinder implements PathFinder {
 							// the cost to get to this node is cost the current plus the movement
 							// cost to reach this node. Note that the heursitic value is only used
 							// in the sorted open list
-							float nextStepCost = current.cost + getMovementCost(mover, current.point, np);
+							int nextStepCost = current.cost + getMovementCost(mover, current.point, np);
 							Node neighbour = nodes[np.getX()][np.getY()][np.getZ()];
 
 							map.pathFinderVisited(np);
@@ -277,7 +277,7 @@ public class AStarPathFinder implements PathFinder {
 		return !invalid;
 	}
 
-	public float getMovementCost(Mover mover, Point source, Point target) {
+	public int getMovementCost(Mover mover, Point source, Point target) {
 		return map.getCost(mover, source, target);
 	}
 
@@ -286,7 +286,7 @@ public class AStarPathFinder implements PathFinder {
 	 * order the locations are processed.
 	 *
 	 */
-	public float getHeuristicCost(Mover mover, Point source, Point target) {
+	public int getHeuristicCost(Mover mover, Point source, Point target) {
 		return heuristic.getCost(map, mover, source, target);
 	}
 
@@ -323,11 +323,11 @@ public class AStarPathFinder implements PathFinder {
 	private class Node implements Comparable {
 		private final Point point;
 		/** The path cost for this node */
-		private float cost;
+		private int cost;
 		/** The parent of this node, how we reached it in the search */
 		private Node parent;
 		/** The heuristic cost of this node */
-		private float heuristic;
+		private int heuristic;
 		/** The search depth of this node */
 		private int depth;
 
@@ -355,8 +355,8 @@ public class AStarPathFinder implements PathFinder {
 		public int compareTo(Object other) {
 			Node o = (Node) other;
 			
-			float f = heuristic + cost;
-			float of = o.heuristic + o.cost;
+			int f = heuristic + cost;
+			int of = o.heuristic + o.cost;
 			
 			if (f < of) {
 				return -1;

@@ -79,7 +79,10 @@ td.selected {
     border: 1px solid white;
 }
 
-img {display:block; filter: invert(1)}
+img {
+    display:block;
+//    filter: invert(1)
+}
 
 #controls {
     position: absolute;

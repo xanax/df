@@ -18,5 +18,5 @@ public interface AStarHeuristic {
 	 * be searched.
 
 	 */
-	public float getCost(TileBasedMap map, Mover mover, Point source, Point target);
+	public int getCost(TileBasedMap map, Mover mover, Point source, Point target);
 }

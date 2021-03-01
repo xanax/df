@@ -12,14 +12,14 @@ public class ClosestHeuristic implements AStarHeuristic {
 	/**
 	 */
 	@Override
-	public float getCost(TileBasedMap map, Mover mover, Point source,Point target) {
-		float dx = target.getX() - source.getX();
-		float dy = target.getY() - source.getY();
-		float dz = target.getZ() - source.getZ();
-		float result = (float) (
-				Math.sqrt(dx * dx +
+	public int getCost(TileBasedMap map, Mover mover, Point source,Point target) {
+		int dx = target.getX() - source.getX();
+		int dy = target.getY() - source.getY();
+		int dz = target.getZ() - source.getZ();
+		int result =
+				dx * dx +
 				dy * dy +
-				dz * dz));
+				dz * dz;
 		// TODO temp should traverse and count climbs
 		if(target.getZ() == source.getZ() + 1) {
 			result *= 100;

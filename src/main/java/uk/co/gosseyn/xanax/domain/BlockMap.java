@@ -94,7 +94,7 @@ public class BlockMap extends Bounds implements TileBasedMap {
     }
 
     @Override
-    public float getCost(final Mover mover, Point source, Point target) {
+    public int getCost(final Mover mover, Point source, Point target) {
         if(source.getZ() != target.getZ()) {
             return 2;
         } else {
