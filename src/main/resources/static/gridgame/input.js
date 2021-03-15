@@ -29,7 +29,7 @@
         var dy = 0;
         switch (code) {
             case keys.update:
-                game.update();
+                //game.update();
                 if(game.paused) {
                     game.refreshInterval = setInterval(game.update, 500);
                     game.paused = false;

@@ -22,6 +22,10 @@ public  class Point {
     int x;
     int y;
     int z;
+
+    public Point(Point point) {
+        x = point.x; y = point.y; z = point.y;
+    }
     public boolean isGreaterOrEqual(Point point) {
         return x >= point.x && y >= point.y && z >= point.z;
     }
@@ -38,14 +42,11 @@ public  class Point {
         this.z += n;
         return this;
     }
-    @Override
-    public Point clone() {
-        return new Point(this.x, this.y, this.z);
-    }
+
     public int distanceTo(Point target) {
         int dx = target.getX() - this.getX();
         int dy = target.getY() - this.getY();
         int dz = target.getZ() - this.getZ();
-        return (dx * dx +dy * dy +dz * dz);
+        return dx * dx +dy * dy +dz * dz;
     }
 }

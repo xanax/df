@@ -12,5 +12,10 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(makeFinal=true, level= AccessLevel.PRIVATE)
 public final class BlockAttributes {
     String name;
+
+    // Can it be moved over horizontally
     boolean floor;
+
+    // Can it be moved through to get to floor
+    boolean traversible;
 }

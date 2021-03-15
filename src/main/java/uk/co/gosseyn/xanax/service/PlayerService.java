@@ -18,7 +18,7 @@ public class PlayerService {
     private PlayerRepository playerRepository;
 
     @Autowired
-    private BitcoinService bitcoinService;
+    private IdService bitcoinService;
 
     public Player newPlayer(GameFacade gameFacade) {
         Player player = new Player(bitcoinService.newAddress());

@@ -1,5 +1,8 @@
 package org.newdawn.slick.util.pathfinding;
 
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import uk.co.gosseyn.xanax.domain.Point;
 
@@ -15,50 +18,31 @@ import java.util.List;
  * @author Kevin Glass
  */
 @Slf4j
-public class AStarPathFinder implements PathFinder {
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
+public class AStarPathFinder {
 	/** The set of nodes that have been searched through */
-	private List<Node> closed = new ArrayList<>();
+	List<Node> closed = new ArrayList<>();
 	/** The set of nodes that we do not yet consider fully searched */
-	private SortedList<Node> open = new SortedList<>();
+	SortedList<Node> open = new SortedList<>();
 	
 	/** The map being searched */
-	private TileBasedMap map;
+	TileBasedMap map;
 	/** The maximum depth of search we're willing to accept before giving up */
-	private int maxSearchDistance;
+	int maxSearchDistance;
 	
 	/** The complete set of nodes across the map */
-	private Node[][][] nodes;
+	Node[][][] nodes;
 	/** True if we allow diaganol movement */
-	private boolean allowDiagMovement;
+	boolean allowDiagMovement;
 	/** The heuristic we're applying to determine which nodes to search first */
-	private AStarHeuristic heuristic;
-	
-	/**
-	 * Create a path finder with the default heuristic - closest to target.
-	 * 
-	 * @param map The map to be searched
-	 * @param maxSearchDistance The maximum depth we'll search before giving up
-	 * @param allowDiagMovement True if the search should try diaganol movement
-	 */
-	public AStarPathFinder(TileBasedMap map, int maxSearchDistance, boolean allowDiagMovement) {
-		this(map, maxSearchDistance, allowDiagMovement, new ClosestHeuristic());
-	}
 
-	/**
-	 * Create a path finder 
-	 * 
-	 * @param heuristic The heuristic used to determine the search order of the map
-	 * @param map The map to be searched
-	 * @param maxSearchDistance The maximum depth we'll search before giving up
-	 * @param allowDiagMovement True if the search should try diaganol movement
-	 */
-	public AStarPathFinder(TileBasedMap map, int maxSearchDistance, 
-						   boolean allowDiagMovement, AStarHeuristic heuristic) {
-		this.heuristic = heuristic;
+	AStarHeuristic heuristic = new ClosestHeuristic();
+
+	public AStarPathFinder(TileBasedMap map, int maxSearchDistance, boolean allowDiagMovement) {
 		this.map = map;
 		this.maxSearchDistance = maxSearchDistance;
 		this.allowDiagMovement = allowDiagMovement;
-		
+
 		nodes = new Node[map.getWidthInTiles()][map.getHeightInTiles()][map.getDepthInTiles()];
 		for (int x=0;x<map.getWidthInTiles();x++) {
 			for (int y=0;y<map.getHeightInTiles();y++) {
@@ -68,10 +52,9 @@ public class AStarPathFinder implements PathFinder {
 			}
 		}
 	}
-	
 
-	@Override
-	public Path findPath(Mover mover, Point source, Point target, boolean reverse) {
+
+	public Path findPath(Mover mover, Point source, Point target, boolean reverse, boolean adjacent) {
 		if(reverse) {
 			Point t = source;
 			source = target;
@@ -122,7 +105,7 @@ public class AStarPathFinder implements PathFinder {
 						Point np = new Point(x+ current.point.getX(), y+ current.point.getY(),
 								z + current.point.getZ());
 
-						if (isValidLocation(mover, source, np, target, current.point, reverse)) {
+						if (isValidLocation(mover, source, np, target, current.point, reverse, adjacent)) {
 							// the cost to get to this node is cost the current plus the movement
 							// cost to reach this node. Note that the heursitic value is only used
 							// in the sorted open list
@@ -257,24 +240,27 @@ public class AStarPathFinder implements PathFinder {
 	 * Check if a given location is valid for the supplied mover
 	 *
 	 */
-	protected boolean isValidLocation(Mover mover, Point source, Point neighbour, Point target, Point current, boolean reversed) {
+	protected boolean isValidLocation(Mover mover, Point source, Point neighbour, Point target, Point current, boolean reversed, boolean adjacent) {
 		boolean invalid = (neighbour.getX() < 0) || (neighbour.getY() < 0) ||(neighbour.getZ() < 0) ||
 				(neighbour.getX() >= map.getWidthInTiles()) || (neighbour.getY() >= map.getHeightInTiles()
 				|| (neighbour.getZ() >= map.getDepthInTiles()));
+		if(invalid) {
+			return false;
+		}
+		boolean atEnd = (!reversed && neighbour.equals(target)) || (reversed && current.equals(source));
 
-		// ensure final square of path it at same z as target
-		if(!reversed && !invalid && neighbour.equals(target)
-				//TODO make this configurable
-				&& current.getZ() != neighbour.getZ()) {
-			invalid = true;
-		} else if (reversed && !invalid && current.equals(source) && current.getZ() != neighbour.getZ()) {
-			invalid = true;
+//		// ensure final square of path it at same z as target
+//		if(atEnd && current.getZ() != neighbour.getZ()) {
+//			return false;
+//		}
+		if(atEnd && adjacent && !map.blocked(mover, current, neighbour)) {
+			return true;
 		}
-		if ((!invalid) && !source.equals(neighbour)) {
-			invalid = map.blocked(mover, neighbour);
+		if (!source.equals(neighbour)) {
+			boolean blocked = map.blocked(mover, current, neighbour);
+			return !blocked;
 		}
-		
-		return !invalid;
+		return false;
 	}
 
 	public int getMovementCost(Mover mover, Point source, Point target) {
@@ -298,7 +284,7 @@ public class AStarPathFinder implements PathFinder {
 		@Override
 		public void add(int position, E e) {
 			internalList.add(e);
-			Collections.sort(internalList, null);
+			internalList.sort(null);
 		}
 
 		@Override

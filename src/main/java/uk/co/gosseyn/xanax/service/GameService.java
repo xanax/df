@@ -37,7 +37,7 @@ public class GameService {
     private MapService mapService;
 
     @Inject
-    private BitcoinService bitcoinService;
+    private IdService bitcoinService;
 
     @Inject NameService nameService;
 
@@ -69,7 +69,7 @@ public class GameService {
     public void addPlayer(String gameId, Player player) {
         Game game = getGame(gameId);
 
-        for(int i = 0; i < 10; i++) {
+        for(int i = 0; i < 1; i++) {
             Man man = new Man(nameService.newName());
             game.getActiveItems().add(man);
             mapService.placeItem(game.getMap(), new Vector2d(i, i), man);
@@ -102,6 +102,7 @@ public class GameService {
 
     @Async
     public void gameLoop() throws InterruptedException {
+        log.info("Game loop thread started.");
         while(true) {
             //TODO a game per thread
             synchronized (gameRepository.lock) {

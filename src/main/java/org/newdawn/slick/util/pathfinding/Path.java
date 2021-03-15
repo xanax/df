@@ -1,5 +1,6 @@
 package org.newdawn.slick.util.pathfinding;
 
+import lombok.ToString;
 import uk.co.gosseyn.xanax.domain.Point;
 
 import java.util.ArrayList;
@@ -7,6 +8,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@ToString
 public class Path {
 	private List<Point> steps = new ArrayList<>();
 	

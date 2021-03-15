@@ -84,7 +84,7 @@ public class MapService {
         Path path = null;
         for(Point point : zone.treeRankedByDistance(location)) {
             if (map.getBlockNumber(point) == block && !except.contains(point)) {
-                path =pathFinderService.findPath(map, location, point, true);
+                path = pathFinderService.findPath(map, location, point, true, true);
                 if (path != null) {
                     break;
                 }
@@ -92,49 +92,5 @@ public class MapService {
         }
         log.trace("Time to find route to nearest block: {}", ((System.nanoTime()-time)/1000000));
         return path;
-    }
-
-    //  Moves in na circular ie        10
-    //                              781
-    //                              6x2
-    //                              543
-    //
-    private Path pathToNearestBlockOld(BlockMap map, final Point location, int block, final Bounds bounds, Set<Point> except) {
-
-        // TODO make 3d (search z-1 then z+1 then z-2 then z+2
-        Point current = location.clone();
-        int length = 0;
-        boolean withinBounds;
-        Point[] moves = {new Point(0,1,0), new Point(-1,0,0),
-                new Point(0,-1,0), new Point(1,0,0)};
-        do {
-            withinBounds = false;
-            // Move up and left by 1
-            current.addx(1).addy(-1);
-            // Add two to the total length of side
-            length += 2;
-            // Loop for each side
-            for (Point move : moves) {
-                // Loop for length of side
-                for (int i = 0; i < length; i++) {
-                    // If within bounds and is block and the path isn't blocked, return path
-                    if (bounds.contains(current)) {
-                        withinBounds = true;
-                        if (map.getBlockNumber(current) == block && !except.contains(current)) {
-                            Path path = pathFinderService.findPath(map, location, current, false);
-                            if (path != null) {
-                                return path;
-                            }
-                        }
-                    }
-                    // Increment current
-                    current.addx(move.getX());
-                    current.addy(move.getY());
-                    //TODO current.addz(move.getZ());
-
-                }
-            }
-        } while (withinBounds);
-        return null;
     }
 }

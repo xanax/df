@@ -4,6 +4,7 @@ import org.bitcoinj.core.Address;
 import org.bitcoinj.params.MainNetParams;
 import org.bitcoinj.script.Script;
 import org.bitcoinj.wallet.Wallet;
+import org.springframework.context.annotation.Profile;
 import uk.co.gosseyn.xanax.domain.GameObject;
 
 import javax.annotation.PostConstruct;
@@ -14,7 +15,8 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 
 @Named
-public class BitcoinService {
+@Profile("bitcoin")
+public class BitcoinService implements IdService {
 
     private Wallet wallet;
 

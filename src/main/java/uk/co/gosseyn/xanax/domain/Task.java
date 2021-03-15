@@ -26,6 +26,9 @@ public abstract class Task extends GameObject {
     @NonFinal
     BigInteger lastRan = BigInteger.ZERO;
 
+    //public boolean checkComplete??
+
+
     public void perform(final Game game) {
         if(game.getFrame().subtract(lastRan).compareTo(repeatFrequency) < 0) {
             return;

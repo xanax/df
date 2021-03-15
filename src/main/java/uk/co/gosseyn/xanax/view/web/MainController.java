@@ -3,6 +3,7 @@ package uk.co.gosseyn.xanax.view.web;
 import lombok.extern.slf4j.Slf4j;
 import org.newdawn.slick.util.pathfinding.PathFinder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,6 +26,7 @@ import javax.inject.Inject;
 
 @Slf4j
 @RestController
+@Profile("web")
 public class MainController {
 
     private final WebGameFacade gameFacade;

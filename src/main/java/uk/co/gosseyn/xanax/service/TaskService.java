@@ -20,7 +20,8 @@ public class TaskService {
         for(SocialGroup group : game.getSocialGroups()) {
 
             // Remove non-repeatable and completed tasks (one time tasks)
-            group.getTasks().removeIf(t -> t.getRepeatFrequency().equals(BigInteger.ZERO)
+            group.getTasks().removeIf(t ->
+                    t.getRepeatFrequency().equals(BigInteger.ZERO)
                     && t.getStatus() == Task.Status.COMPLETE);
 
             // Get all tasks sorted by number of assignees

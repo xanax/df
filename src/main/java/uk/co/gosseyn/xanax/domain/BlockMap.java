@@ -3,19 +3,18 @@ package uk.co.gosseyn.xanax.domain;
 import lombok.extern.slf4j.Slf4j;
 import org.newdawn.slick.util.pathfinding.Mover;
 import org.newdawn.slick.util.pathfinding.TileBasedMap;
-import org.newdawn.slick.util.pathfinding.example.UnitMover;
 
 import java.util.HashSet;
 import java.util.Set;
 @Slf4j
 public class BlockMap extends Bounds implements TileBasedMap {
 
-    final static BlockAttributes[] BLOCK_ATTRIBUTES = new BlockAttributes[] {
-            new BlockAttributes("Empty", false),
-            new BlockAttributes("Rock", false),
-            new BlockAttributes("Grass", true),
-            new BlockAttributes("Water", false),
-            new BlockAttributes("Tree", false)
+    static final BlockAttributes[] BLOCK_ATTRIBUTES = new BlockAttributes[] {
+            new BlockAttributes("Empty", false, true),
+            new BlockAttributes("Rock", false, false),
+            new BlockAttributes("Grass", true,  false),
+            new BlockAttributes("Water", true, true),
+            new BlockAttributes("Tree", false, false)
     };
 
     public static final int EMPTY = 0;
@@ -33,7 +32,7 @@ public class BlockMap extends Bounds implements TileBasedMap {
     private Set<Locatable>[] itemsMap;
 
     public BlockMap(Point size) {
-        super(new Point(0,0, 0), size.clone().addx(-1).addy(-1).addz(-1));
+        super(new Point(0,0, 0), new Point(size).addx(-1).addy(-1).addz(-1));
         this.size = size;
         map = new int[size.getX() * size.getY() * size.getZ()];
         itemsMap = new Set[size.getX() * size.getY() * size.getZ()];
@@ -44,22 +43,27 @@ public class BlockMap extends Bounds implements TileBasedMap {
     }
 
     public int getBlockNumber(Point location) {
-        return map[(location.getZ() * size.getX() * size.getY()) + (location.getY() * size.getX()) + location.getX()];
+        return map[blockIndex(location)];
     }
+
+    private int blockIndex(final Point location) {
+        return (location.getZ() * size.getX() * size.getY()) + (location.getY() * size.getX()) + location.getX();
+    }
+
     public BlockAttributes getBlock(Point location) {
-        return BLOCK_ATTRIBUTES[map[(location.getZ() * size.getX() * size.getY()) + (location.getY() * size.getX()) + location.getX()]];
+        return BLOCK_ATTRIBUTES[map[blockIndex(location)]];
     }
     public void setBlock(Point location, int block) {
-        map[(location.getZ() * size.getX() * size.getY()) + (location.getY() * size.getX()) + location.getX()] = block;
+        map[blockIndex(location)] = block;
     }
     public Set<Locatable> getItem(Point location) {
-        return itemsMap[(location.getZ() * size.getX() * size.getY()) + (location.getY() * size.getX()) + location.getX()];
+        return itemsMap[blockIndex(location)];
     }
     public void addItem(Point location, Locatable item) {
-        itemsMap[(location.getZ() * size.getX() * size.getY()) + (location.getY() * size.getX()) + location.getX()].add(item);
+        itemsMap[blockIndex(location)].add(item);
     }
     public void removeItem(Point location, Locatable item) {
-        itemsMap[(location.getZ() * size.getX() * size.getY()) + (location.getY() * size.getX()) + location.getX()].remove(item);
+        itemsMap[blockIndex(location)].remove(item);
     }
 
     @Override
@@ -82,11 +86,12 @@ public class BlockMap extends Bounds implements TileBasedMap {
     }
 
     @Override
-    public boolean blocked(final Mover mover, Point point) {
+    public boolean blocked(final Mover mover, Point source, Point point) {
         //int unit = ((UnitMover) mover).getType();
-        //Point below = point.clone().addz(-1);
-        //TODO if before target enforce being on same Z
-        if(!getBlock(point).isFloor()) {
+        if (!getBlock(point).isFloor()
+                || (source.getZ() != point.getZ()
+                    && !getBlock(new Point(point.getX(), point.getY(), source.getZ())).isTraversible()
+                    && !getBlock(new Point(source.getX(), source.getY(), point.getZ())).isTraversible())) {
             return true;
         } else {
             return false;
@@ -95,6 +100,7 @@ public class BlockMap extends Bounds implements TileBasedMap {
 
     @Override
     public int getCost(final Mover mover, Point source, Point target) {
+        //TODO lazyness/fitness to dictate cost
         if(source.getZ() != target.getZ()) {
             return 2;
         } else {
