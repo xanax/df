@@ -3,14 +3,12 @@ package uk.co.gosseyn.xanax.domain;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
-import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashSet;
 import java.util.Set;
 
 import static uk.co.gosseyn.xanax.domain.BlockMap.ROCK;
-import static uk.co.gosseyn.xanax.domain.BlockMap.TREE;
 
 @Slf4j
 @Data
@@ -69,7 +67,7 @@ public class ForestTask extends Task {
         if(!(taskAssignee instanceof MovingObject)) {
             return Float.MAX_VALUE;
         }
-        return ((MovingObject)taskAssignee).getLocation().distanceTo(zone.getBounds().center());
+        return ((MovingObject)taskAssignee).getLocation().distanceToPow2(zone.getBounds().center());
     }
 
     public enum MineTaskStatus implements TaskStatus  {

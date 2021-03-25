@@ -1,7 +1,10 @@
 package uk.co.gosseyn.xanax.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.extern.slf4j.Slf4j;
+import org.newdawn.slick.util.pathfinding.AStarPathFinder;
 import org.newdawn.slick.util.pathfinding.Mover;
+import org.newdawn.slick.util.pathfinding.PathFinder;
 import org.newdawn.slick.util.pathfinding.TileBasedMap;
 import org.newdawn.slick.util.pathfinding.example.UnitMover;
 
@@ -32,6 +35,8 @@ public class BlockMap extends Bounds implements TileBasedMap {
     // For complex stuff and for where multiple items exist at single point. Expect most of the elements to be null
     private Set<Locatable>[] itemsMap;
 
+    private PathFinder pathFinder;
+
     public BlockMap(Point size) {
         super(new Point(0,0, 0), size.clone().addx(-1).addy(-1).addz(-1));
         this.size = size;
@@ -40,7 +45,7 @@ public class BlockMap extends Bounds implements TileBasedMap {
         for(int i = 0; i < itemsMap.length; i++){
             itemsMap[i] = new HashSet<>();
         }
-
+        pathFinder = new AStarPathFinder(this, 500, true);
     }
 
     public int getBlockNumber(Point location) {
@@ -100,5 +105,10 @@ public class BlockMap extends Bounds implements TileBasedMap {
         } else {
             return 1;
         }
+    }
+
+    @Override
+    public PathFinder getPathFinder() {
+        return pathFinder;
     }
 }

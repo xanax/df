@@ -1,6 +1,7 @@
 package org.newdawn.slick.util.pathfinding;
 
 import uk.co.gosseyn.xanax.domain.Point;
+import uk.co.gosseyn.xanax.service.PathFinderService;
 
 /**
  * The description for the data we're pathfinding over. This provides the contract
@@ -10,10 +11,11 @@ import uk.co.gosseyn.xanax.domain.Point;
  * @author Kevin Glass
  */
 public interface TileBasedMap {
-	public int getWidthInTiles();
-	public int getHeightInTiles();
-	public int getDepthInTiles();
-	public void pathFinderVisited(Point point);
-	public boolean blocked(Mover mover, Point point);
-	public float getCost(Mover mover, Point source, Point target);
+	int getWidthInTiles();
+	int getHeightInTiles();
+	int getDepthInTiles();
+	void pathFinderVisited(Point point);
+	boolean blocked(Mover mover, Point point);
+	float getCost(Mover mover, Point source, Point target);
+    PathFinder getPathFinder();
 }
