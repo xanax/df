@@ -91,7 +91,7 @@ public class BlockMap extends Bounds implements TileBasedMap {
     }
 
     @Override
-    public boolean blocked(final Mover mover, Point source, Point point) {
+    public boolean blocked( Mover mover, Point source, Point point) {
         //int unit = ((UnitMover) mover).getType();
         if (!getBlock(point).isFloor()
                 || (source.getZ() != point.getZ()

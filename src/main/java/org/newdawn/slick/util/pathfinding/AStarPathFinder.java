@@ -19,7 +19,7 @@ import java.util.List;
  */
 @Slf4j
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-public class AStarPathFinder {
+public class AStarPathFinder implements PathFinder {
 	/** The set of nodes that have been searched through */
 	List<Node> closed = new ArrayList<>();
 	/** The set of nodes that we do not yet consider fully searched */
