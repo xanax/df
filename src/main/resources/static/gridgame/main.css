@@ -81,7 +81,9 @@ td.selected {
 
 img {
     display:block;
-//    filter: invert(1)
+    /*
+    filter: invert(1)
+    */
 }
 
 #controls {
@@ -92,7 +94,6 @@ img {
     opacity: 50%;
     display: none;
 }
-
 
 #game-menu {
     display: block;

@@ -1,27 +1,14 @@
 package uk.co.gosseyn.xanax.domain;
 
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
-import org.newdawn.slick.util.pathfinding.ClosestHeuristic;
-import org.springframework.data.util.Pair;
 
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import static uk.co.gosseyn.xanax.domain.BlockMap.ROCK;
-import static uk.co.gosseyn.xanax.domain.BlockMap.TREE;
 
 @Getter
 @Setter
@@ -38,19 +25,14 @@ public class ForestZone extends Zone {
 
     }
 
-    public List<Point> treeRankedByDistance(Point point) {
+    public Point[] treeRankedByDistance(Point point) {
 
         return treeLocations.stream().sorted((o1, o2) -> {
             //TODO calc distance multiple times maybe?
-            int distance1 = o1.distanceTo(point);
-            int distance2 = o2.distanceTo(point);
-            if(distance1 > distance2) {
-                return 1;
-            } else if (distance1 < distance2) {
-                return -1;
-            }
-            return 0;
-        }).collect(Collectors.toList());
+            float distance1 = o1.distanceToPow2(point);
+            float distance2 = o2.distanceToPow2(point);
+            return Float.compare(distance1, distance2);
+        }).toArray(Point[]::new);
     }
 
     private void scan() {

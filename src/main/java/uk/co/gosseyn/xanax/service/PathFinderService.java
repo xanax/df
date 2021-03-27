@@ -17,9 +17,7 @@ import javax.inject.Named;
 public class PathFinderService {
 
     public Path findPath(BlockMap map, Point from, Point to, boolean reverse, boolean adjacent) {
-        //TODO class variable
-        AStarPathFinder finder = new AStarPathFinder(map, 500, true);
-        return finder.findPath(new UnitMover(0),
+        return map.getPathFinder().findPath(new UnitMover(0),
                 from, to, reverse, adjacent);
     }
 

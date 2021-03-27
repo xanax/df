@@ -26,7 +26,8 @@
             type: "GET",
             data: {},
             success: function(data) {
-                game.data = JSON.parse(data);
+                //game.data.gameId = JSON.parse(data);
+                game.data.gameId = data;
                 console.log('Game ID: '+game.data.gameId);
 
                 minAjax({

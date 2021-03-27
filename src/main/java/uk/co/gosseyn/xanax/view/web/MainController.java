@@ -69,9 +69,9 @@ public class MainController {
     }
 
     @RequestMapping("/newGame")
-    public Game newGame() {
+    public String newGame() {
         Game game = gameService.newGame();
-        return game;
+        return game.getGameId();
     }
 
     @RequestMapping("/newPlayer")
